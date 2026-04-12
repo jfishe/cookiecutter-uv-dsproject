@@ -29,7 +29,7 @@
 uv tool install cookiecutter
 
 # Generate a project
-cookiecutter gh:YOUR_USERNAME/cookiecutter-uv-dsproject
+cookiecutter gh:jfishe/cookiecutter-uv-dsproject
 
 # The post-hook runs git init + uv sync automatically
 cd my-ds-project

@@ -5,11 +5,7 @@
 ```{toctree}
 :maxdepth: 2
 
-api/index
-
-### `docs/api/index.md`
-```markdown
-# API Reference
-
-```{autodoc2-summary}
-{{ cookiecutter.package_name }}
+Overview <readme>
+License <license>
+apidocs/index
+```
