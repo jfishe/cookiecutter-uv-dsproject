@@ -1,0 +1,17 @@
+{
+  "project_name": "My DS Project",
+  "project_slug": "{{ cookiecutter.project_name | lower | replace(' ', '-') | replace('_', '-') }}",
+  "package_name": "{{ cookiecutter.project_slug | replace('-', '_') }}",
+  "project_description": "A short description of the project.",
+  "author_name": "Your Name",
+  "author_email": "you@example.com",
+  "github_username": "your-github-username",
+  "python_version": "3.12",
+  "min_python_version": "3.10",
+  "license": ["MIT", "Apache-2.0", "BSD-3-Clause", "GPL-3.0-only", "Proprietary"],
+  "include_notebooks": ["yes", "no"],
+  "include_docs": ["yes", "no"],
+  "include_docker": ["yes", "no"],
+  "include_github_actions": ["yes", "no"],
+  "initial_version": "0.1.0"
+}
