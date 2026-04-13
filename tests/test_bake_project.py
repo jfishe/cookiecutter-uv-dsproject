@@ -63,6 +63,24 @@ class TestBasicBake:
         assert 'name = "test-project"' in text
         assert 'requires-python = ">=3.10"' in text
 
+    def test_starter_notebook_exists(self, cookies: Cookies) -> None:
+        result = _bake(cookies)
+        nb = result.project_path / "notebooks" / "getting-started.ipynb"
+        assert nb.is_file()
+        # Verify it's parseable JSON with the right structure
+        import json
+        data = json.loads(nb.read_text())
+        assert data["nbformat"] == 4
+        assert len(data["cells"]) >= 5
+
+    def test_train_script_exists(self, cookies: Cookies) -> None:
+        result = _bake(cookies)
+        script = result.project_path / "scripts" / "train_model.py"
+        assert script.is_file()
+        text = script.read_text()
+        assert "argparse" in text
+        assert "test_project" in text  # package_name for "Test Project"
+
 
 # ---------------------------------------------------------------------------
 # Feature toggles
@@ -84,6 +102,10 @@ class TestFeatureToggles:
     def test_no_github_actions(self, cookies: Cookies) -> None:
         result = _bake(cookies, include_github_actions="no")
         assert not (result.project_path / ".github").exists()
+
+    def test_no_notebooks_removes_ipynb(self, cookies: Cookies) -> None:
+        result = _bake(cookies, include_notebooks="no")
+        assert not (result.project_path / "notebooks" / "getting-started.ipynb").exists()
 
 
 # ---------------------------------------------------------------------------

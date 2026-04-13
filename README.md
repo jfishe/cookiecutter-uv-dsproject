@@ -60,25 +60,47 @@ uv run pytest
 
 ```
 my-ds-project/
-├── src/my_ds_project/        ← installable package
+├── .github/
+│   ├── dependabot.yml
+│   └── workflows/
+│       ├── ci.yml
+│       └── release.yml
+├── src/my_ds_project/
 │   ├── __init__.py
+│   ├── py.typed
 │   ├── dataset.py
 │   ├── features.py
 │   └── modeling.py
 ├── tests/
-├── data/{raw,interim,processed,external}/
+│   ├── __init__.py
+│   └── test_placeholder.py
+├── data/
+│   ├── raw/
+│   ├── interim/
+│   ├── processed/
+│   └── external/
 ├── models/
 ├── notebooks/
-├── reports/figures/
+│   └── getting-started.ipynb
+├── reports/
+│   └── figures/
 ├── scripts/
-├── references/
+│   └── train_model.py
 ├── configs/
+│   └── example.yaml
+├── references/
 ├── docs/
-├── .github/workflows/
+│   ├── conf.py
+│   ├── index.md
+│   └── api/
+│       └── index.md
 ├── pyproject.toml
 ├── Makefile
 ├── Dockerfile
-└── .pre-commit-config.yaml
+├── .pre-commit-config.yaml
+├── .gitignore
+├── LICENSE
+└── README.md
 ```
 
 ## Development (on this template itself)

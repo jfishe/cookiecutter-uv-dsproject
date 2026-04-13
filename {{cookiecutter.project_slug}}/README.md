@@ -11,22 +11,39 @@
 ## Project Layout
 
 ```
-├── src/{{ cookiecutter.package_name }}/   ← importable package
-│   ├── dataset.py                         ← data loading & saving
-│   ├── features.py                        ← feature engineering
-│   └── modeling.py                        ← model persistence & metrics
+├── src/{{ cookiecutter.package_name }}/
+│   ├── __init__.py
+│   ├── py.typed               ← PEP 561 type-checking marker
+│   ├── dataset.py             ← data loading & saving
+│   ├── features.py            ← feature engineering
+│   └── modeling.py            ← model persistence & metrics
+├── tests/
+│   ├── __init__.py
+│   └── test_placeholder.py
 ├── data/
-│   ├── raw/            ← immutable original data
-│   ├── interim/        ← intermediate transforms
-│   ├── processed/      ← final, analysis-ready data
-│   └── external/       ← third-party reference data
-├── models/             ← serialised models & metrics
-├── notebooks/          ← exploratory Jupyter notebooks
-├── reports/figures/    ← generated plots
-├── scripts/            ← standalone utility scripts
-├── configs/            ← experiment configuration files
-├── references/         ← data dictionaries, papers, manuals
-└── tests/
+│   ├── raw/                   ← immutable original data
+│   ├── interim/               ← intermediate transforms
+│   ├── processed/             ← final, analysis-ready data
+│   └── external/              ← third-party reference data
+├── models/                    ← serialised models & metrics
+├── notebooks/
+│   └── getting-started.ipynb  ← starter notebook (dsproject-style)
+├── reports/
+│   └── figures/               ← generated plots
+├── scripts/
+│   └── train_model.py         ← CLI training entry point
+├── configs/
+│   └── example.yaml           ← experiment configuration template
+├── references/                ← data dictionaries, papers, manuals
+├── docs/                      ← Sphinx + MyST documentation
+├── .github/workflows/         ← CI & release pipelines
+├── pyproject.toml             ← single source of truth
+├── Makefile                   ← common task shortcuts
+├── Dockerfile                 ← multi-stage uv build
+├── .pre-commit-config.yaml    ← ruff, mypy, standard hooks
+├── .gitignore
+├── LICENSE
+└── README.md
 ```
 
 ## Quickstart
