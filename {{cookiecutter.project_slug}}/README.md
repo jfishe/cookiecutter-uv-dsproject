@@ -41,6 +41,7 @@
 ├── Makefile                   ← common task shortcuts
 ├── Dockerfile                 ← multi-stage uv build
 ├── .pre-commit-config.yaml    ← ruff, mypy, standard hooks
+│                                (includes pandas-stubs and joblib-stubs in dev)
 ├── .gitignore
 ├── LICENSE
 └── README.md
@@ -53,7 +54,7 @@
 curl -LsSf https://astral.sh/uv/install.sh | sh
 
 # Create virtualenv & install all deps
-make install          # or: uv sync --all-extras
+make install          # or: uv sync --all-groups
 
 # Run tests
 make test             # or: uv run pytest
@@ -95,13 +96,13 @@ make docs             # builds to docs/_build/html/
 
 | Target | Description |
 |---|---|
-| `install` | `uv sync --all-extras` |
-| `fmt` | Auto-format with Ruff |
-| `lint` | Lint with Ruff |
-| `typecheck` | Run mypy |
-| `test` | Run pytest with coverage |
-| `jupyter` | Launch JupyterLab |
-| `docs` | Build Sphinx docs |
+| `install` | `uv sync --all-groups` |
+| `fmt` | Auto-format with Ruff (installs dev group if needed) |
+| `lint` | Lint with Ruff (installs dev group if needed) |
+| `typecheck` | Run mypy (ensure dev group installed) |
+| `test` | Run pytest with coverage (ensure dev group installed) |
+| `jupyter` | Launch JupyterLab (syncs notebooks group) |
+| `docs` | Build Sphinx docs (syncs docs group) |
 | `docker-build` | Build Docker image |
 | `clean` | Remove caches & build artifacts |
 

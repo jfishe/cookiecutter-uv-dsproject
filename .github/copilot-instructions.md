@@ -139,7 +139,23 @@ syntax to execute specific tests.
 - hooks/ — cookiecutter hooks that affect the generated
   repository state.
 - .pre-commit-config.yaml — pre-commit hooks used by generated
-  projects (ruff, mypy, etc.).
+  projects. Major hooks in the template include:
+  - pre-commit-hooks: basic checks such as trailing-whitespace,
+    end-of-file-fixer, and check-yaml.
+  - pyproject-fmt: formatting for pyproject.toml.
+  - ruff: linting; some ruff hooks run with fix arguments
+    to auto-apply fixes (see the hook args).
+  - ruff-format: applies ruff's formatting pass where enabled.
+  - markdownlint-fix and mdformat (with plugins): markdown
+    linting and formatting.
+  - gitlint (commit-msg): validates commit messages and helps
+    enforce Conventional Commits.
+  - mirrors-mypy: runs mypy for type checking; the hook adds
+    additional_dependencies (e.g. pandas-stubs, joblib-stubs) and
+    uses the project mypy config-file when present.
+
+  Consult .pre-commit-config.yaml for exact hook IDs and any
+  extra args or additional_dependencies used by the template.
 
 5. AI/assistant config scan
 
