@@ -44,6 +44,7 @@ notebooks = [
     "ipykernel>=6.0",
     "matplotlib>=3.8",
     "seaborn>=0.13",
+    "nbdime>=4.0",
 {%- if cookiecutter.include_notebook_ux == "yes" %}
     "docrepr>=0.2",
 {%- endif %}

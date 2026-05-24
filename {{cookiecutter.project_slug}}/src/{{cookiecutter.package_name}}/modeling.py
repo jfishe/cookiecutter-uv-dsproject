@@ -21,7 +21,7 @@ def save_model(model: Any, filename: str) -> Path:
     Parameters
     ----------
     model : Any
-        A fitted estimator (scikit-learn, XGBoost, LightGBM, etc.).
+        A fitted estimator, such as a scikit-learn model.
     filename : str
         Destination filename, e.g. ``"clf_v1.joblib"``.
 
@@ -62,10 +62,10 @@ def save_metrics(metrics: dict[str, Any], filename: str = "metrics.json") -> Pat
 
     Parameters
     ----------
-    metrics : dict
-        Arbitrary key-value pairs (accuracy, f1, RMSE, …).
-    filename : str
-        Destination inside ``models/``, defaults to ``metrics.json``.
+    metrics : dict[str, Any]
+        Arbitrary key-value pairs such as accuracy or RMSE.
+    filename : str, default="metrics.json"
+        Destination inside ``models/``.
 
     Returns
     -------

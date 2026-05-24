@@ -3,7 +3,7 @@
 [![CI](https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.project_slug }}/actions/workflows/ci.yml/badge.svg)](https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.project_slug }}/actions/workflows/ci.yml)
 [![Python {{ cookiecutter.min_python_version }}+](https://img.shields.io/badge/python-{{ cookiecutter.min_python_version }}%2B-blue.svg)](https://www.python.org/downloads/)
 {%- if cookiecutter.license != "Proprietary" %}
-[![License: {{ cookiecutter.license }}](https://img.shields.io/badge/license-{{ cookiecutter.license | replace("-", "--") }}-green.svg)](LICENSE)
+[![License: {{ cookiecutter.license }}](https://img.shields.io/badge/license-{{ cookiecutter.license | replace("-", "--") }}-green.svg)](https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.project_slug }}/blob/main/LICENSE)
 {%- endif %}
 
 > {{ cookiecutter.project_description }}
@@ -94,6 +94,8 @@ with a project-local IPython config and `docrepr`.
 Open the inspector with `Ctrl+I` (`Cmd+I` on macOS) for HTML-rendered
 docstrings while you type.
 {%- endif %}
+The notebooks dependency group also includes `nbdime` for notebook-aware
+diff and merge tooling in Jupyter and Git workflows.
 {%- endif %}
 {%- if cookiecutter.include_docs == "yes" %}
 
@@ -129,7 +131,7 @@ make docs             # builds to docs/_build/html/
 ## License
 
 {%- if cookiecutter.license == "Proprietary" %}
-Proprietary — see [LICENSE](LICENSE).
+Proprietary — see the repository license file.
 {%- else %}
-[{{ cookiecutter.license }}](LICENSE)
+[{{ cookiecutter.license }}](https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.project_slug }}/blob/main/LICENSE)
 {%- endif %}

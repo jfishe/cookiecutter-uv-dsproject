@@ -34,6 +34,11 @@
 
   - Optional JupyterLab inspector enhancements with `docrepr`
     and a project-local IPython config.
+  - Inspired by Martin Renou's
+    ["Inspector JupyterLab"](https://blog.jupyter.org/inspector-jupyterlab-404cce3e1df6)
+    on the Jupyter Blog.
+  - Notebook projects include `nbdime` for notebook-aware diff and
+    merge tooling.
 
 - Linting
 

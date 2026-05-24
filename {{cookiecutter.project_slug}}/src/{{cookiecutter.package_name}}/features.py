@@ -16,12 +16,13 @@ def build_features(df: pd.DataFrame) -> pd.DataFrame:
     Parameters
     ----------
     df : pd.DataFrame
-        Input data (typically loaded via :func:`{{ cookiecutter.package_name }}.dataset.load_raw`).
+        Input data, typically loaded via
+        :func:`{{ cookiecutter.package_name }}.dataset.load_raw`.
 
     Returns
     -------
     pd.DataFrame
-        A copy of *df* with additional / transformed columns.
+        A copy of *df* with additional or transformed columns.
     """
     df = df.copy()
     # ----- Add feature transforms below -----

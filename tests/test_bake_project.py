@@ -152,10 +152,35 @@ class TestContent:
     def test_notebook_ux_is_documented(self, cookies: Cookies) -> None:
         result = _bake(cookies)
         pyproject = (result.project_path / "pyproject.toml").read_text()
+        assert "nbdime>=4.0" in pyproject
         assert "docrepr>=0.2" in pyproject
         readme = (result.project_path / "README.md").read_text()
         assert "Ctrl+I" in readme
         assert "docrepr" in readme
+
+    def test_docs_starter_files_match_template(self, cookies: Cookies) -> None:
+        result = _bake(cookies, include_docs="yes")
+        conf = (result.project_path / "docs" / "conf.py").read_text()
+        assert '"sphinx.ext.napoleon"' in conf
+        assert "napoleon_numpy_docstring = True" in conf
+        assert "napoleon_use_param = False" in conf
+        assert 'autodoc2_docstring_parser_regexes = [' in conf
+        parser_module = (result.project_path / "docs" / "_ext" / "napoleon_numpy_parser.py").read_text()
+        assert "class Parser(RstParser):" in parser_module
+        assert "NumpyDocstring" in parser_module
+        license_doc = (result.project_path / "docs" / "license.md").read_text()
+        assert "../LICENSE" in license_doc
+        assert "LICENSE.txt" not in license_doc
+
+        features = (result.project_path / "src" / "test_project" / "features.py").read_text()
+        assert "Parameters\n" in features
+        assert "Returns\n" in features
+        assert ":param df:" not in features
+
+        modeling = (result.project_path / "src" / "test_project" / "modeling.py").read_text()
+        assert "Parameters\n" in modeling
+        assert "Returns\n" in modeling
+        assert ":param model:" not in modeling
 
     def test_ci_workflow_exists(self, cookies: Cookies) -> None:
         result = _bake(cookies)
