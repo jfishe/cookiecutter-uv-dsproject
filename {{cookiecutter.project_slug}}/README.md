@@ -28,6 +28,11 @@
 ├── models/                    ← serialised models & metrics
 ├── notebooks/
 │   └── getting-started.ipynb  ← starter notebook (dsproject-style)
+{%- if cookiecutter.include_notebooks == "yes" and cookiecutter.include_notebook_ux == "yes" %}
+├── .ipython/
+│   └── profile_default/
+│       └── ipython_config.py  ← project-local JupyterLab inspector config
+{%- endif %}
 ├── reports/
 │   └── figures/               ← generated plots
 ├── scripts/
@@ -82,6 +87,13 @@ Launch JupyterLab with the project virtualenv kernel:
 ```bash
 make jupyter
 ```
+
+{%- if cookiecutter.include_notebook_ux == "yes" %}
+The generated project also enables richer JupyterLab inspector help
+with a project-local IPython config and `docrepr`.
+Open the inspector with `Ctrl+I` (`Cmd+I` on macOS) for HTML-rendered
+docstrings while you type.
+{%- endif %}
 {%- endif %}
 {%- if cookiecutter.include_docs == "yes" %}
 
@@ -101,7 +113,7 @@ make docs             # builds to docs/_build/html/
 | `lint` | Lint with Ruff (installs dev group if needed) |
 | `typecheck` | Run mypy (ensure dev group installed) |
 | `test` | Run pytest with coverage (ensure dev group installed) |
-| `jupyter` | Launch JupyterLab (syncs notebooks group) |
+| `jupyter` | Launch JupyterLab (syncs notebooks group{% if cookiecutter.include_notebook_ux == "yes" %} and enables rich inspector help{% endif %}) |
 | `docs` | Build Sphinx docs (syncs docs group) |
 | `docker-build` | Build Docker image |
 | `clean` | Remove caches & build artifacts |

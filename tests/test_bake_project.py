@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import json
 import re
 from pathlib import Path
 from typing import TYPE_CHECKING
@@ -68,10 +69,17 @@ class TestBasicBake:
         nb = result.project_path / "notebooks" / "getting-started.ipynb"
         assert nb.is_file()
         # Verify it's parseable JSON with the right structure
-        import json
         data = json.loads(nb.read_text())
         assert data["nbformat"] == 4
         assert len(data["cells"]) >= 5
+
+    def test_notebook_inspector_config_exists(self, cookies: Cookies) -> None:
+        result = _bake(cookies)
+        config = result.project_path / ".ipython" / "profile_default" / "ipython_config.py"
+        assert config.is_file()
+        text = config.read_text()
+        assert "InteractiveShell.sphinxify_docstring = True" in text
+        assert "InteractiveShell.enable_html_pager = True" in text
 
     def test_train_script_exists(self, cookies: Cookies) -> None:
         result = _bake(cookies)
@@ -90,6 +98,7 @@ class TestFeatureToggles:
     def test_no_notebooks(self, cookies: Cookies) -> None:
         result = _bake(cookies, include_notebooks="no")
         assert not (result.project_path / "notebooks").exists()
+        assert not (result.project_path / ".ipython").exists()
 
     def test_no_docs(self, cookies: Cookies) -> None:
         result = _bake(cookies, include_docs="no")
@@ -106,6 +115,16 @@ class TestFeatureToggles:
     def test_no_notebooks_removes_ipynb(self, cookies: Cookies) -> None:
         result = _bake(cookies, include_notebooks="no")
         assert not (result.project_path / "notebooks" / "getting-started.ipynb").exists()
+
+    def test_notebook_ux_can_be_disabled(self, cookies: Cookies) -> None:
+        result = _bake(cookies, include_notebook_ux="no")
+        assert not (result.project_path / ".ipython").exists()
+        pyproject = (result.project_path / "pyproject.toml").read_text()
+        assert "docrepr>=0.2" not in pyproject
+        makefile = (result.project_path / "Makefile").read_text()
+        assert "IPYTHONDIR=.ipython" not in makefile
+        readme = (result.project_path / "README.md").read_text()
+        assert "rich inspector help" not in readme
 
 
 # ---------------------------------------------------------------------------
@@ -128,6 +147,15 @@ class TestContent:
         text = (result.project_path / "Makefile").read_text()
         for target in ("install", "fmt", "lint", "test", "clean"):
             assert re.search(rf"^{target}:", text, re.MULTILINE)
+        assert "IPYTHONDIR=.ipython uv run jupyter lab --notebook-dir=notebooks" in text
+
+    def test_notebook_ux_is_documented(self, cookies: Cookies) -> None:
+        result = _bake(cookies)
+        pyproject = (result.project_path / "pyproject.toml").read_text()
+        assert "docrepr>=0.2" in pyproject
+        readme = (result.project_path / "README.md").read_text()
+        assert "Ctrl+I" in readme
+        assert "docrepr" in readme
 
     def test_ci_workflow_exists(self, cookies: Cookies) -> None:
         result = _bake(cookies)

@@ -11,6 +11,7 @@ from pathlib import Path
 PROJECT_DIR = Path(os.getcwd())
 
 INCLUDE_NOTEBOOKS = "{{ cookiecutter.include_notebooks }}" == "yes"
+INCLUDE_NOTEBOOK_UX = "{{ cookiecutter.include_notebook_ux }}" == "yes"
 INCLUDE_DOCS = "{{ cookiecutter.include_docs }}" == "yes"
 INCLUDE_DOCKER = "{{ cookiecutter.include_docker }}" == "yes"
 INCLUDE_GITHUB_ACTIONS = "{{ cookiecutter.include_github_actions }}" == "yes"
@@ -27,6 +28,9 @@ def _remove(rel_path: str) -> None:
 def prune_features() -> None:
     if not INCLUDE_NOTEBOOKS:
         _remove("notebooks")
+        _remove(".ipython")
+    elif not INCLUDE_NOTEBOOK_UX:
+        _remove(".ipython")
 
     if not INCLUDE_DOCS:
         _remove("docs")

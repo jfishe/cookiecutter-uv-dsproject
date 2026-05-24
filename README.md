@@ -30,6 +30,11 @@
 
   - `dataset.py`, `features.py`, `modeling.py` — starter stubs.
 
+- Notebook UX
+
+  - Optional JupyterLab inspector enhancements with `docrepr`
+    and a project-local IPython config.
+
 - Linting
 
   - Ruff (lint + format) and mypy (strict).
@@ -128,6 +133,10 @@ uv run pytest
   include_github_actions: `yes`/`no` flags that control optional
   features.
 
+- include_notebook_ux: `yes`/`no` — when notebooks are enabled,
+  configure richer JupyterLab inspector help with `docrepr`
+  and a project-local IPython profile.
+
 - initial_version: `0.1.0` — Starting version string.
 
 ## Generated project tree
@@ -156,6 +165,9 @@ my-ds-project/
 ├── models/
 ├── notebooks/
 │   └── getting-started.ipynb
+├── .ipython/
+│   └── profile_default/
+│       └── ipython_config.py
 ├── reports/
 │   └── figures/
 ├── scripts/

@@ -35,7 +35,11 @@ test: ## Run tests with coverage (ensure dev tools installed)
 
 jupyter: ## Launch JupyterLab (will try to install notebooks group)
 	uv sync --group notebooks || true
+{%- if cookiecutter.include_notebooks == "yes" and cookiecutter.include_notebook_ux == "yes" %}
+	IPYTHONDIR=.ipython uv run jupyter lab --notebook-dir=notebooks
+{%- else %}
 	uv run jupyter lab --notebook-dir=notebooks
+{%- endif %}
 
 docs: ## Build Sphinx docs (ensure docs group installed)
 	uv sync --group docs || true
