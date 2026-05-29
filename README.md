@@ -42,7 +42,8 @@
 
 - Linting
 
-  - Ruff (lint + format) and mypy (strict).
+  - Ruff (lint + format) plus configurable type checking with
+    mypy or ty.
 
 - CI
 
@@ -78,14 +79,19 @@
 
     - gitlint on commit-msg for Conventional Commits.
 
-    - mirrors-mypy with `pandas-stubs` and
-      `--config-file=pyproject.toml`.
+    - `mirrors-mypy` with `pandas-stubs` and
+      `--config-file=pyproject.toml`, or a local `ty` hook via
+      `uv run ty check src/`.
 
-  - Type stubs and mypy
+  - Type checking options
 
-    - The template installs `pandas-stubs` and `joblib-stubs` in
-      the `dev` dependency-group so mypy can type-check commonly
-      used DS libraries.
+    - The default `mypy` option installs `pandas-stubs` and
+      `joblib-stubs` in the `dev` dependency-group so mypy can
+      type-check commonly used DS libraries.
+
+    - The `ty` option installs `ty` plus `joblib` in the `dev`
+      dependency-group and adds a minimal `[tool.ty]` configuration
+      scoped to `src/`.
 
     - If you add libraries without upstream typing, prefer
       installing third-party stub packages (e.g.,
@@ -131,6 +137,9 @@ uv run pytest
 
 - min_python_version: `3.10` — `requires-python` floor.
 
+- type_checker: `mypy`/`ty` — Static type checker for pre-commit,
+  `make typecheck`, and CI.
+
 - license: `MIT` (choices include Apache-2.0, BSD-3, GPL-3,
   Proprietary).
 
@@ -146,7 +155,7 @@ uv run pytest
 
 ## Generated project tree
 
-```
+```text
 my-ds-project/
 ├── .github/
 │   ├── dependabot.yml

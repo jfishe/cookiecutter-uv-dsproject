@@ -69,6 +69,7 @@ repos:
       - id: gitlint
         stages: [commit-msg]
 
+{%- if cookiecutter.type_checker == "mypy" %}
   - repo: https://github.com/pre-commit/mirrors-mypy
     rev: v1.10.0
     hooks:
@@ -76,3 +77,13 @@ repos:
         additional_dependencies: [pandas-stubs]
         args: ["--config-file=pyproject.toml"]
         pass_filenames: false
+{%- else %}
+  - repo: local
+    hooks:
+      - id: ty
+        name: ty
+        entry: uv run ty check src/ --output-format concise --no-progress
+        language: system
+        pass_filenames: false
+        types_or: [python, pyi]
+{%- endif %}

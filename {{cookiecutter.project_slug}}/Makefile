@@ -25,9 +25,13 @@ lint: ## Lint code with Ruff (ensure dev tools installed)
 	uv run ruff check src/ tests/
 	uv run ruff format --check src/ tests/
 
-typecheck: ## Type-check with mypy (ensure dev tools installed)
+typecheck: ## Type-check with {{ cookiecutter.type_checker }} (ensure dev tools installed)
 	$(UV_SYNC_DEV)
+{%- if cookiecutter.type_checker == "mypy" %}
 	uv run mypy src/
+{%- else %}
+	uv run ty check src/
+{%- endif %}
 
 test: ## Run tests with coverage (ensure dev tools installed)
 	$(UV_SYNC_DEV)
@@ -50,7 +54,7 @@ docker-build: ## Build Docker image
 
 clean: ## Remove build artifacts and caches
 	rm -rf dist/ build/ *.egg-info .venv/
-	rm -rf .pytest_cache/ .mypy_cache/ .ruff_cache/ htmlcov/
+	rm -rf .pytest_cache/ .mypy_cache/ .ruff_cache/ .ty_cache/ htmlcov/
 	rm -rf docs/_build/
 	find . -type d -name __pycache__ -exec rm -rf {} + 2>/dev/null || true
 	find . -type f -name "*.pyc" -delete 2>/dev/null || true

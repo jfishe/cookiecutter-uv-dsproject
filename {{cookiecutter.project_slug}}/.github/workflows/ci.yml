@@ -31,7 +31,11 @@ jobs:
         with:
           enable-cache: true
       - run: uv sync --all-extras
+{%- if cookiecutter.type_checker == "mypy" %}
       - run: uv run mypy src/
+{%- else %}
+      - run: uv run ty check src/
+{%- endif %}
 
   test:
     runs-on: ubuntu-latest

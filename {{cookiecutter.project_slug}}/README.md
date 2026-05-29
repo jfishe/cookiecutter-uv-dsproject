@@ -45,8 +45,10 @@
 ├── pyproject.toml             ← single source of truth
 ├── Makefile                   ← common task shortcuts
 ├── Dockerfile                 ← multi-stage uv build
-├── .pre-commit-config.yaml    ← ruff, mypy, standard hooks
+├── .pre-commit-config.yaml    ← ruff, {{ cookiecutter.type_checker }}, standard hooks
+{%- if cookiecutter.type_checker == "mypy" %}
 │                                (includes pandas-stubs and joblib-stubs in dev)
+{%- endif %}
 ├── .gitignore
 ├── LICENSE
 └── README.md
@@ -113,7 +115,7 @@ make docs             # builds to docs/_build/html/
 | `install` | `uv sync --all-groups` |
 | `fmt` | Auto-format with Ruff (installs dev group if needed) |
 | `lint` | Lint with Ruff (installs dev group if needed) |
-| `typecheck` | Run mypy (ensure dev group installed) |
+| `typecheck` | Run {{ cookiecutter.type_checker }} (ensure dev group installed) |
 | `test` | Run pytest with coverage (ensure dev group installed) |
 | `jupyter` | Launch JupyterLab (syncs notebooks group{% if cookiecutter.include_notebook_ux == "yes" %} and enables rich inspector help{% endif %}) |
 | `docs` | Build Sphinx docs (syncs docs group) |

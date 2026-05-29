@@ -63,6 +63,8 @@ class TestBasicBake:
         text = (result.project_path / "pyproject.toml").read_text()
         assert 'name = "test-project"' in text
         assert 'requires-python = ">=3.10"' in text
+        assert '"mypy>=1.10"' in text
+        assert "[tool.mypy]" in text
 
     def test_starter_notebook_exists(self, cookies: Cookies) -> None:
         result = _bake(cookies)
@@ -125,6 +127,38 @@ class TestFeatureToggles:
         assert "IPYTHONDIR=.ipython" not in makefile
         readme = (result.project_path / "README.md").read_text()
         assert "rich inspector help" not in readme
+
+    def test_ty_type_checker_option(self, cookies: Cookies) -> None:
+        result = _bake(cookies, type_checker="ty")
+
+        pyproject = (result.project_path / "pyproject.toml").read_text()
+        assert '"ty>=0.0.39"' in pyproject
+        assert '"joblib>=1.3"' in pyproject
+        assert "[tool.ty.environment]" in pyproject
+        assert 'python-version = "3.10"' in pyproject
+        assert 'include = ["src"]' in pyproject
+        assert '"mypy>=1.10"' not in pyproject
+        assert "[tool.mypy]" not in pyproject
+        assert "pandas-stubs>=2.0" not in pyproject
+        assert "joblib-stubs>=1.5.2.0.20250831" not in pyproject
+
+        pre_commit = (result.project_path / ".pre-commit-config.yaml").read_text()
+        assert "repo: local" in pre_commit
+        assert "id: ty" in pre_commit
+        assert "uv run ty check src/ --output-format concise --no-progress" in pre_commit
+        assert "mirrors-mypy" not in pre_commit
+
+        makefile = (result.project_path / "Makefile").read_text()
+        assert "uv run ty check src/" in makefile
+        assert "Type-check with ty" in makefile
+
+        workflow = (result.project_path / ".github" / "workflows" / "ci.yml").read_text()
+        assert "uv run ty check src/" in workflow
+        assert "uv run mypy src/" not in workflow
+
+        readme = (result.project_path / "README.md").read_text()
+        assert "ruff, ty, standard hooks" in readme
+        assert "Run ty (ensure dev group installed)" in readme
 
 
 # ---------------------------------------------------------------------------

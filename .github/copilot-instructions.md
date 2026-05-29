@@ -23,11 +23,16 @@ or
 
 uv run pytest -k "<substring_of_test_name>"
 
-Lint, format, and typecheck. This template uses ruff and mypy.
+Lint, format, and typecheck. Generated projects use ruff and
+either mypy or ty, depending on the `type_checker` option.
 
 uv run ruff .
 
 uv run mypy src
+
+or
+
+uv run ty check src
 
 Makefile targets are provided in generated projects and mirror
 many uv commands.
@@ -102,8 +107,9 @@ uv ensures reproducible installs and a lockfile.
 
 Strict typing and linting
 
-Generated projects use ruff for linting/formatting and mypy for
-static typing.
+Generated projects use ruff for linting/formatting and either
+mypy or ty for static typing, selected by the `type_checker`
+template option.
 
 Expect stricter type coverage than many data-science templates.
 
@@ -150,9 +156,12 @@ syntax to execute specific tests.
     linting and formatting.
   - gitlint (commit-msg): validates commit messages and helps
     enforce Conventional Commits.
-  - mirrors-mypy: runs mypy for type checking; the hook adds
-    additional_dependencies (e.g. pandas-stubs, joblib-stubs) and
-    uses the project mypy config-file when present.
+  - mirrors-mypy: runs mypy for type checking when the template
+    selects mypy; the hook adds additional_dependencies (e.g.
+    pandas-stubs, joblib-stubs) and uses the project mypy
+    config-file when present.
+  - local ty hook: runs `uv run ty check src/` when the template
+    selects ty.
 
   Consult .pre-commit-config.yaml for exact hook IDs and any
   extra args or additional_dependencies used by the template.
