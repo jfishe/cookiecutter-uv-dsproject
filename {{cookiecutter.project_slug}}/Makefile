@@ -6,7 +6,7 @@ SHELL := /bin/bash
 # install only the needed groups quickly.
 UV_SYNC_DEV ?= uv sync --group dev
 
-.PHONY: help install fmt lint typecheck test jupyter docs docker-build clean
+.PHONY: help install fmt lint typecheck test jupyter docs latexpdf docker-build clean
 
 help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
@@ -46,8 +46,10 @@ jupyter: ## Launch JupyterLab (will try to install notebooks group)
 {%- endif %}
 
 docs: ## Build Sphinx docs (ensure docs group installed)
-	uv sync --group docs || true
-	uv run sphinx-build -b html docs/ docs/_build/html
+	$(MAKE) -C docs html
+
+latexpdf: ## Build Sphinx PDF docs (ensure docs group installed)
+	$(MAKE) -C docs latexpdf
 
 docker-build: ## Build Docker image
 	docker build -t {{ cookiecutter.project_slug }}:latest .

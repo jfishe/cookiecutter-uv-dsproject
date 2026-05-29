@@ -56,6 +56,8 @@
 - Docs
 
   - Sphinx + MyST + Furo + autodoc2 (optional).
+  - PDF output via Sphinx LaTeX requires a TeX toolchain such as
+    `latexmk`, `texlive-xetex`, and `xindy`.
 
 - Docker
 
@@ -208,6 +210,26 @@ my-ds-project/
 ```bash
 uv sync
 uv run pytest tests/
+```
+
+## PDF docs dependencies
+
+Generated projects can build HTML docs with `make docs`.
+To build PDF docs with Sphinx's LaTeX builder, install a TeX
+toolchain first.
+
+On Debian or Ubuntu, the minimum packages are typically:
+
+```bash
+sudo apt install latexmk texlive-xetex xindy
+```
+
+Then build the PDF with:
+
+```bash
+cd my-ds-project
+make latexpdf
+make -C docs clean
 ```
 
 ## License

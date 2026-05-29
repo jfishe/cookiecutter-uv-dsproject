@@ -17,6 +17,8 @@ extensions = [
     "sphinx.ext.viewcode",
 ]
 
+source_suffix = [".rst", ".md"]
+
 autodoc2_packages = ["../src/{{ cookiecutter.package_name }}"]
 autodoc2_docstring_parser_regexes = [
     (r".*", "napoleon_numpy_parser"),
@@ -37,9 +39,32 @@ napoleon_use_rtype = False
 html_theme = "furo"
 
 myst_enable_extensions = [
+    "amsmath",
     "colon_fence",
     "deflist",
+    "dollarmath",
+    "html_image",
+    "linkify",
+    "replacements",
+    "smartquotes",
+    "substitution",
     "tasklist",
+]
+
+myst_heading_anchors = 5
+
+latex_engine = "xelatex"
+
+latex_elements = {}
+
+latex_documents = [
+    (
+        "index",
+        "{{ cookiecutter.project_slug }}.tex",
+        "{{ cookiecutter.project_name }} Documentation",
+        "{{ cookiecutter.author_name }}",
+        "manual",
+    ),
 ]
 
 intersphinx_mapping = {

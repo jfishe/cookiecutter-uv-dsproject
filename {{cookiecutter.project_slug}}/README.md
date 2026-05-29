@@ -1,16 +1,18 @@
 # {{ cookiecutter.project_name }}
 
+<!-- docs:badges:start -->
 [![CI](https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.project_slug }}/actions/workflows/ci.yml/badge.svg)](https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.project_slug }}/actions/workflows/ci.yml)
 [![Python {{ cookiecutter.min_python_version }}+](https://img.shields.io/badge/python-{{ cookiecutter.min_python_version }}%2B-blue.svg)](https://www.python.org/downloads/)
 {%- if cookiecutter.license != "Proprietary" %}
 [![License: {{ cookiecutter.license }}](https://img.shields.io/badge/license-{{ cookiecutter.license | replace("-", "--") }}-green.svg)](https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.project_slug }}/blob/main/LICENSE)
 {%- endif %}
+<!-- docs:badges:end -->
 
 > {{ cookiecutter.project_description }}
 
 ## Project Layout
 
-```
+```text
 ├── src/{{ cookiecutter.package_name }}/
 │   ├── __init__.py
 │   ├── py.typed               ← PEP 561 type-checking marker
@@ -105,6 +107,21 @@ diff and merge tooling in Jupyter and Git workflows.
 
 ```bash
 make docs             # builds to docs/_build/html/
+make latexpdf         # builds docs/_build/latex/*.pdf
+```
+
+To build PDF docs, install a TeX toolchain first.
+On Debian or Ubuntu, the minimum packages are typically:
+
+```bash
+sudo apt install latexmk texlive-xetex xindy
+```
+
+Then run:
+
+```bash
+make latexpdf
+make -C docs clean    # removes Sphinx build artifacts
 ```
 {%- endif %}
 
@@ -119,6 +136,7 @@ make docs             # builds to docs/_build/html/
 | `test` | Run pytest with coverage (ensure dev group installed) |
 | `jupyter` | Launch JupyterLab (syncs notebooks group{% if cookiecutter.include_notebook_ux == "yes" %} and enables rich inspector help{% endif %}) |
 | `docs` | Build Sphinx docs (syncs docs group) |
+| `latexpdf` | Build Sphinx PDF docs (syncs docs group) |
 | `docker-build` | Build Docker image |
 | `clean` | Remove caches & build artifacts |
 

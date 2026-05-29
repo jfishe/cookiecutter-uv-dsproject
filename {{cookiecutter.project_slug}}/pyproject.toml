@@ -60,6 +60,7 @@ notebooks = [
 docs = [
     "sphinx>=7.0",
     "myst-parser>=3.0",
+    "linkify-it-py>=2.0",
     "sphinx-autodoc2>=0.5",
     "furo>=2024.1",
 ]

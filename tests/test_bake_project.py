@@ -179,7 +179,7 @@ class TestContent:
     def test_makefile_has_targets(self, cookies: Cookies) -> None:
         result = _bake(cookies)
         text = (result.project_path / "Makefile").read_text()
-        for target in ("install", "fmt", "lint", "test", "clean"):
+        for target in ("install", "fmt", "lint", "test", "docs", "latexpdf", "clean"):
             assert re.search(rf"^{target}:", text, re.MULTILINE)
         assert "IPYTHONDIR=.ipython uv run jupyter lab --notebook-dir=notebooks" in text
 
@@ -194,14 +194,45 @@ class TestContent:
 
     def test_docs_starter_files_match_template(self, cookies: Cookies) -> None:
         result = _bake(cookies, include_docs="yes")
+        pyproject = (result.project_path / "pyproject.toml").read_text()
+        assert '"linkify-it-py>=2.0"' in pyproject
+        makefile = (result.project_path / "Makefile").read_text()
+        assert "$(MAKE) -C docs html" in makefile
+        assert "$(MAKE) -C docs latexpdf" in makefile
         conf = (result.project_path / "docs" / "conf.py").read_text()
         assert '"sphinx.ext.napoleon"' in conf
         assert "napoleon_numpy_docstring = True" in conf
         assert "napoleon_use_param = False" in conf
         assert 'autodoc2_docstring_parser_regexes = [' in conf
+        assert 'source_suffix = [".rst", ".md"]' in conf
+        assert '"amsmath"' in conf
+        assert '"dollarmath"' in conf
+        assert '"html_image"' in conf
+        assert '"linkify"' in conf
+        assert '"replacements"' in conf
+        assert '"smartquotes"' in conf
+        assert '"substitution"' in conf
+        assert "myst_heading_anchors = 5" in conf
+        assert 'latex_engine = "xelatex"' in conf
+        assert "pdflatex" not in conf
+        assert "latex_elements = {}" in conf
+        assert "latex_documents = [" in conf
+        assert '{{ cookiecutter.project_slug }}.tex' not in conf
+        assert "test-project.tex" in conf
         parser_module = (result.project_path / "docs" / "_ext" / "napoleon_numpy_parser.py").read_text()
         assert "class Parser(RstParser):" in parser_module
         assert "NumpyDocstring" in parser_module
+        readme = (result.project_path / "README.md").read_text()
+        assert "<!-- docs:badges:start -->" in readme
+        assert "<!-- docs:badges:end -->" in readme
+        docs_readme = (result.project_path / "docs" / "readme.md").read_text()
+        assert ":end-before: <!-- docs:badges:start -->" in docs_readme
+        assert ":start-after: <!-- docs:badges:end -->" in docs_readme
+        docs_makefile = (result.project_path / "docs" / "Makefile").read_text()
+        assert "UV_SYNC_DOCS ?= uv sync --group docs" in docs_makefile
+        assert "SPHINXBUILD ?= uv run sphinx-build" in docs_makefile
+        assert re.search(r"^clean:$", docs_makefile, re.MULTILINE)
+        assert '@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)"' in docs_makefile
         license_doc = (result.project_path / "docs" / "license.md").read_text()
         assert "../LICENSE" in license_doc
         assert "LICENSE.txt" not in license_doc
