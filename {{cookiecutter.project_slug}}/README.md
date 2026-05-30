@@ -47,7 +47,9 @@
 ├── .github/workflows/         ← CI & release pipelines
 ├── pyproject.toml             ← single source of truth
 ├── Makefile                   ← common task shortcuts
+{%- if cookiecutter.include_docker == "yes" %}
 ├── Dockerfile                 ← multi-stage uv build
+{%- endif %}
 ├── .pre-commit-config.yaml    ← ruff, {{ cookiecutter.type_checker }}, standard hooks
 {%- if cookiecutter.type_checker == "mypy" %}
 │                                (includes pandas-stubs and joblib-stubs in dev)
@@ -148,6 +150,9 @@ page-number prefix:
 make docs             # builds to docs/_build/html/
 make latexpdf         # builds docs/_build/latex/*.pdf
 ```
+
+Read the Docs can use the bundled `.readthedocs.yaml`, which installs the
+`docs` dependency group via `uv sync` and points RTD at `docs/conf.py`.
 
 To build PDF docs, install a TeX toolchain first.
 On Debian or Ubuntu, the minimum packages are typically:

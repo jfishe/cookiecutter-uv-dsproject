@@ -6,7 +6,10 @@ SHELL := /bin/bash
 # install only the needed groups quickly.
 UV_SYNC_DEV ?= uv sync --group dev
 
-.PHONY: help install fmt lint typecheck test jupyter docs latexpdf docker-build clean
+.PHONY: help install fmt lint typecheck test jupyter docs latexpdf clean
+{%- if cookiecutter.include_docker == "yes" %}
+.PHONY: docker-build
+{%- endif %}
 
 help: ## Show this help
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | \
@@ -51,8 +54,10 @@ docs: ## Build Sphinx docs (ensure docs group installed)
 latexpdf: ## Build Sphinx PDF docs (ensure docs group installed)
 	$(MAKE) -C docs latexpdf
 
+{%- if cookiecutter.include_docker == "yes" %}
 docker-build: ## Build Docker image
 	docker build -t {{ cookiecutter.project_slug }}:latest .
+{%- endif %}
 
 clean: ## Remove build artifacts and caches
 	rm -rf dist/ build/ *.egg-info .venv/
