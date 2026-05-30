@@ -47,6 +47,7 @@ training = [
 notebooks = [
     "jupyterlab>=4.0",
     "ipykernel>=6.0",
+    "jinja2>=3.1",
     "matplotlib>=3.8",
     "seaborn>=0.13",
     "nbdime>=4.0",
@@ -103,6 +104,9 @@ select = [
     "PTH",    # flake8-use-pathlib
 ]
 ignore = ["D100", "D104", "D203", "D213"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "numpy"
 
 [tool.ruff.lint.per-file-ignores]
 "tests/**" = ["S101", "D"]

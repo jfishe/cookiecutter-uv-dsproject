@@ -82,6 +82,7 @@ df = load_raw("experiment_01.csv")
 df = build_features(df)
 save_processed(df, "experiment_01_features.parquet")
 ```
+
 {%- if cookiecutter.include_notebooks == "yes" %}
 
 ## Notebooks
@@ -100,6 +101,27 @@ docstrings while you type.
 {%- endif %}
 The notebooks dependency group also includes `nbdime` for notebook-aware
 diff and merge tooling in Jupyter and Git workflows.
+For nbconvert-friendly tables, use the generated display helper:
+
+```python
+from {{ cookiecutter.package_name }}.display import display_dataframe
+
+display_dataframe(
+    df.describe(),
+    caption="Summary statistics",
+    label="tab:summary-statistics",
+)
+```
+
+It renders HTML in JupyterLab and provides LaTeX output for notebook
+exports such as `nbconvert --to pdf`.
+To preserve table captions and labels in PDF exports, use the bundled
+nbconvert LaTeX template:
+
+```bash
+jupyter nbconvert --to=pdf --template=templates/latex \
+  notebooks/getting-started.ipynb --output-dir=reports
+```
 {%- endif %}
 {%- if cookiecutter.include_docs == "yes" %}
 

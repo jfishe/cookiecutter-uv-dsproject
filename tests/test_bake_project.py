@@ -65,6 +65,8 @@ class TestBasicBake:
         assert 'requires-python = ">=3.10"' in text
         assert '"mypy>=1.10"' in text
         assert "[tool.mypy]" in text
+        assert "[tool.ruff.lint.pydocstyle]" in text
+        assert 'convention = "numpy"' in text
 
     def test_starter_notebook_exists(self, cookies: Cookies) -> None:
         result = _bake(cookies)
@@ -74,6 +76,28 @@ class TestBasicBake:
         data = json.loads(nb.read_text())
         assert data["nbformat"] == 4
         assert len(data["cells"]) >= 5
+        assert data["metadata"]["title"] == "Test Project getting started"
+        notebook_source = "\n".join("".join(cell["source"]) for cell in data["cells"])
+        assert "from test_project.display import configure_notebook_display, display_dataframe" in notebook_source
+        assert "configure_notebook_display()" in notebook_source
+        assert 'caption="Example notebook summary"' in notebook_source
+        assert r"\autoref{tab:example-notebook-summary}" in notebook_source
+        table_cells = [
+            cell for cell in data["cells"] if cell.get("metadata", {}).get("table_export")
+        ]
+        assert len(table_cells) == 1
+        table_export = table_cells[0]["metadata"]["table_export"]
+        assert table_export["title"] == "Example notebook summary"
+        assert table_export["caption"] == "Example notebook summary"
+        assert table_export["label"] == "tab:example-notebook-summary"
+        latex_template = result.project_path / "templates" / "latex" / "index.tex.j2"
+        assert latex_template.is_file()
+        latex_conf = result.project_path / "templates" / "latex" / "conf.json"
+        assert latex_conf.is_file()
+        template_text = latex_template.read_text()
+        assert r"\captionsetup[table]{format=plain, font=small, labelfont=bf, labelsep=colon}" in template_text
+        assert r"\captionsetup[longtable]{format=plain, font=small, labelfont=bf, labelsep=colon}" in template_text
+        assert '"base_template": "latex"' in latex_conf.read_text()
 
     def test_notebook_inspector_config_exists(self, cookies: Cookies) -> None:
         result = _bake(cookies)
@@ -187,10 +211,22 @@ class TestContent:
         result = _bake(cookies)
         pyproject = (result.project_path / "pyproject.toml").read_text()
         assert "nbdime>=4.0" in pyproject
+        assert "jinja2>=3.1" in pyproject
         assert "docrepr>=0.2" in pyproject
         readme = (result.project_path / "README.md").read_text()
         assert "Ctrl+I" in readme
         assert "docrepr" in readme
+        assert "display_dataframe" in readme
+        assert "nbconvert --to pdf" in readme
+        assert "--template=templates/latex" in readme
+
+    def test_dataframe_display_helper_exists(self, cookies: Cookies) -> None:
+        result = _bake(cookies)
+        helper = (result.project_path / "src" / "test_project" / "display.py").read_text()
+        assert "def configure_notebook_display" in helper
+        assert "def display_dataframe" in helper
+        assert 'msg = "label requires a caption"' in helper
+        assert '"text/latex": styler.to_latex(' in helper
 
     def test_docs_starter_files_match_template(self, cookies: Cookies) -> None:
         result = _bake(cookies, include_docs="yes")

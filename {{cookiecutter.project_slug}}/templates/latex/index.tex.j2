@@ -1,0 +1,20 @@
+((=- Keep default notebook styling with code cells, etc. -=))
+((*- if not cell_style is defined -*))
+  ((*  set cell_style = 'style_jupyter.tex.j2'  *))
+((*- endif -*))
+
+((* extends cell_style *))
+
+((*- block packages -*))
+  ((( super() )))
+  % Load caption after base.tex.j2 so we can override its nocaption defaults.
+  \usepackage[font=small,labelfont=bf,labelsep=colon]{caption}
+((*- endblock packages -*))
+
+((*- block definitions -*))
+  ((( super() )))
+
+  % Restore captions hidden by nbconvert's base.tex.j2 for notebook tables.
+  \captionsetup[table]{format=plain, font=small, labelfont=bf, labelsep=colon}
+  \captionsetup[longtable]{format=plain, font=small, labelfont=bf, labelsep=colon}
+((*- endblock definitions -*))
