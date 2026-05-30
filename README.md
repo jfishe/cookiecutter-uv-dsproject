@@ -56,6 +56,8 @@
 - Docs
 
   - Sphinx + MyST + Furo + autodoc2 (optional).
+  - Generated projects include a `.readthedocs.yaml` that builds docs with
+    `uv sync --group docs`.
   - PDF output via Sphinx LaTeX requires a TeX toolchain such as
     `latexmk`, `texlive-xetex`, and `xindy`.
 
@@ -196,6 +198,7 @@ my-ds-project/
 │   ├── index.md
 │   └── api/
 │       └── index.md
+├── .readthedocs.yaml
 ├── pyproject.toml
 ├── Makefile
 ├── Dockerfile

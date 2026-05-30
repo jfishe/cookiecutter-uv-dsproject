@@ -34,6 +34,7 @@ def prune_features() -> None:
 
     if not INCLUDE_DOCS:
         _remove("docs")
+        _remove(".readthedocs.yaml")
 
     if not INCLUDE_DOCKER:
         _remove("Dockerfile")

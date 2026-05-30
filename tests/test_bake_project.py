@@ -138,10 +138,13 @@ class TestFeatureToggles:
     def test_no_docs(self, cookies: Cookies) -> None:
         result = _bake(cookies, include_docs="no")
         assert not (result.project_path / "docs").exists()
+        assert not (result.project_path / ".readthedocs.yaml").exists()
 
     def test_no_docker(self, cookies: Cookies) -> None:
         result = _bake(cookies, include_docker="no")
         assert not (result.project_path / "Dockerfile").exists()
+        makefile = (result.project_path / "Makefile").read_text()
+        readme = (result.project_path / "README.md").read_text()
 
     def test_no_github_actions(self, cookies: Cookies) -> None:
         result = _bake(cookies, include_github_actions="no")
@@ -279,6 +282,15 @@ class TestContent:
         assert "SPHINXBUILD ?= uv run sphinx-build" in docs_makefile
         assert re.search(r"^clean:$", docs_makefile, re.MULTILINE)
         assert '@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)"' in docs_makefile
+        rtd_config = (result.project_path / ".readthedocs.yaml").read_text()
+        assert "version: 2" in rtd_config
+        assert "os: ubuntu-24.04" in rtd_config
+        assert 'python: "3.12"' in rtd_config
+        assert "configuration: docs/conf.py" in rtd_config
+        assert "method: uv" in rtd_config
+        assert "command: sync" in rtd_config
+        assert "groups:" in rtd_config
+        assert "- docs" in rtd_config
         license_doc = (result.project_path / "docs" / "license.md").read_text()
         assert "../LICENSE" in license_doc
         assert "LICENSE.txt" not in license_doc

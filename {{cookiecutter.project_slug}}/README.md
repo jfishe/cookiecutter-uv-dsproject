@@ -43,6 +43,7 @@
 │   └── example.yaml           ← experiment configuration template
 ├── references/                ← data dictionaries, papers, manuals
 ├── docs/                      ← Sphinx + MyST documentation
+├── .readthedocs.yaml          ← Read the Docs build config
 ├── .github/workflows/         ← CI & release pipelines
 ├── pyproject.toml             ← single source of truth
 ├── Makefile                   ← common task shortcuts
