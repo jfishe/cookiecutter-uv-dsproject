@@ -4,7 +4,9 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
-These release notes summarize changes since `v1.0.0`.
+These release notes summarize changes since `v2.0.0`.
+
+## [v2.0.0]
 
 ### Added
 
@@ -20,6 +22,8 @@ These release notes summarize changes since `v1.0.0`.
   restore captions for both `table` and `longtable` output.
 - Added a generated `docs/Makefile` plus top-level `make latexpdf`
   support for Sphinx documentation builds.
+- Added a generated `.readthedocs.yaml` so projects with docs enabled can
+  build on Read the Docs via `uv sync --group docs` and `docs/conf.py`.
 
 ### Changed
 
@@ -46,5 +50,8 @@ These release notes summarize changes since `v1.0.0`.
   `make -C docs clean` all work as documented.
 - Fixed notebook PDF export so table captions and labels survive
   nbconvert's default LaTeX caption suppression.
+- Fixed the generated Makefile so the `docker-build` target is only
+  included when Docker support is enabled.
 
-[Unreleased]: https://github.com/jfishe/cookiecutter-uv-dsproject/compare/v1.0.0...HEAD
+[Unreleased]: https://github.com/jfishe/cookiecutter-uv-dsproject/compare/v2.0.0...HEAD
+[v2.0.0]: https://github.com/jfishe/cookiecutter-uv-dsproject/compare/v1.0.0...v2.0.0
