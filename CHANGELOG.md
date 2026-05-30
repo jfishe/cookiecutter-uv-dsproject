@@ -4,7 +4,13 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
-These release notes summarize changes since `v2.0.0`.
+These release notes summarize changes since `v2.1.0`.
+
+## [v2.1.0]
+
+### Fixed
+
+Updated version in `pyproject.toml`.
 
 ## [v2.0.0]
 
@@ -53,5 +59,6 @@ These release notes summarize changes since `v2.0.0`.
 - Fixed the generated Makefile so the `docker-build` target is only
   included when Docker support is enabled.
 
-[Unreleased]: https://github.com/jfishe/cookiecutter-uv-dsproject/compare/v2.0.0...HEAD
+[Unreleased]: https://github.com/jfishe/cookiecutter-uv-dsproject/compare/v2.1.0...HEAD
+[v2.1.0]: https://github.com/jfishe/cookiecutter-uv-dsproject/compare/v2.0.0...v2.1.0
 [v2.0.0]: https://github.com/jfishe/cookiecutter-uv-dsproject/compare/v1.0.0...v2.0.0
