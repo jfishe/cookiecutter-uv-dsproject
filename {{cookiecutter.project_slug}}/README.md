@@ -122,6 +122,22 @@ nbconvert LaTeX template:
 jupyter nbconvert --to=pdf --template=templates/latex \
   notebooks/getting-started.ipynb --output-dir=reports
 ```
+
+Notebook-level export settings live under `metadata.latex_export`.
+The bundled template reads `document_id`, `revision`, and `page_prefix`
+from that block to build a right-aligned running header and optional
+page-number prefix:
+
+```json
+{
+  "title": "My DS Project getting started",
+  "latex_export": {
+    "document_id": "DOC-0001",
+    "revision": "0",
+    "page_prefix": "A-"
+  }
+}
+```
 {%- endif %}
 {%- if cookiecutter.include_docs == "yes" %}
 

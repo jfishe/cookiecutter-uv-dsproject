@@ -77,6 +77,11 @@ class TestBasicBake:
         assert data["nbformat"] == 4
         assert len(data["cells"]) >= 5
         assert data["metadata"]["title"] == "Test Project getting started"
+        assert data["metadata"]["latex_export"] == {
+            "document_id": "DOC-0001",
+            "page_prefix": "A-",
+            "revision": "0",
+        }
         notebook_source = "\n".join("".join(cell["source"]) for cell in data["cells"])
         assert "from test_project.display import configure_notebook_display, display_dataframe" in notebook_source
         assert "configure_notebook_display()" in notebook_source
@@ -95,6 +100,10 @@ class TestBasicBake:
         latex_conf = result.project_path / "templates" / "latex" / "conf.json"
         assert latex_conf.is_file()
         template_text = latex_template.read_text()
+        assert "nb.metadata.get('latex_export', {})" in template_text
+        assert r"\usepackage{fancyhdr}" in template_text
+        assert r"\fancyhead[R]{\notebookheadertext}" in template_text
+        assert r"\renewcommand{\thepage}" in template_text
         assert r"\captionsetup[table]{format=plain, font=small, labelfont=bf, labelsep=colon}" in template_text
         assert r"\captionsetup[longtable]{format=plain, font=small, labelfont=bf, labelsep=colon}" in template_text
         assert '"base_template": "latex"' in latex_conf.read_text()
@@ -219,6 +228,7 @@ class TestContent:
         assert "display_dataframe" in readme
         assert "nbconvert --to pdf" in readme
         assert "--template=templates/latex" in readme
+        assert "metadata.latex_export" in readme
 
     def test_dataframe_display_helper_exists(self, cookies: Cookies) -> None:
         result = _bake(cookies)

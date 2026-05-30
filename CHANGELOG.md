@@ -34,6 +34,9 @@ These release notes summarize changes since `v1.0.0`.
   table-export metadata, LaTeX cross-references via
   `\autoref{tab:example-notebook-summary}`, and the new display helper
   workflow.
+- Updated the generated nbconvert LaTeX template to read optional
+  `latex_export` notebook metadata for document IDs, revisions, and
+  page-number prefixes in running headers.
 
 ### Fixed
 
