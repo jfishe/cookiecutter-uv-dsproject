@@ -65,8 +65,12 @@
 
   - Multi-stage uv build, non-root user (optional).
 
-- Pre-commit
+- Git hooks
 
+  - Optional `.pre-commit-config.yaml` support with
+    `pre_commit_tool: prek` (default), `pre-commit`, or `none`.
+  - Generated projects add the matching runner to the `dev`
+    dependency group unless `none` is selected.
   - Configured hooks include:
 
     - pre-commit-hooks (trailing-whitespace, end-of-file,
@@ -143,8 +147,8 @@ uv run pytest
 
 - min_python_version: `3.10` — `requires-python` floor.
 
-- type_checker: `mypy`/`ty` — Static type checker for pre-commit,
-  `make typecheck`, and CI.
+- type_checker: `mypy`/`ty` — Static type checker for optional Git
+  hooks, `make typecheck`, and CI.
 
 - license: `MIT` (choices include Apache-2.0, BSD-3, GPL-3,
   Proprietary).
@@ -152,6 +156,9 @@ uv run pytest
 - include_notebooks / include_docs / include_docker /
   include_github_actions: `yes`/`no` flags that control optional
   features.
+
+- pre_commit_tool: `prek`/`pre-commit`/`none` — choose the generated
+  Git hook runner, with `prek` as the default.
 
 - include_notebook_ux: `yes`/`no` — when notebooks are enabled,
   configure richer JupyterLab inspector help with `docrepr`
@@ -204,7 +211,7 @@ my-ds-project/
 ├── pyproject.toml
 ├── Makefile
 ├── Dockerfile
-├── .pre-commit-config.yaml
+├── .pre-commit-config.yaml    # optional; generated unless runner=none
 ├── .gitignore
 ├── LICENSE
 └── README.md

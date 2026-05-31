@@ -50,9 +50,11 @@
 {%- if cookiecutter.include_docker == "yes" %}
 ├── Dockerfile                 ← multi-stage uv build
 {%- endif %}
+{%- if cookiecutter.pre_commit_tool != "none" %}
 ├── .pre-commit-config.yaml    ← ruff, {{ cookiecutter.type_checker }}, standard hooks
 {%- if cookiecutter.type_checker == "mypy" %}
 │                                (includes pandas-stubs and joblib-stubs in dev)
+{%- endif %}
 {%- endif %}
 ├── .gitignore
 ├── LICENSE
@@ -74,6 +76,27 @@ make test             # or: uv run pytest
 # Format & lint
 make fmt lint
 ```
+
+{%- if cookiecutter.pre_commit_tool != "none" %}
+
+## Git Hooks
+
+The generated project includes a `.pre-commit-config.yaml` for
+{%- if cookiecutter.pre_commit_tool == "prek" %}
+[`prek`](https://github.com/j178/prek), a faster drop-in replacement for
+`pre-commit`.
+{%- else %}
+[`pre-commit`](https://pre-commit.com/).
+{%- endif %}
+
+```bash
+# Install Git hooks and prepare hook environments
+uv run {{ cookiecutter.pre_commit_tool }} install --prepare-hooks -f
+
+# Run all configured hooks on demand
+uv run {{ cookiecutter.pre_commit_tool }} run --all-files
+```
+{%- endif %}
 
 ## Data Workflow
 
@@ -180,6 +203,10 @@ make -C docs clean    # removes Sphinx build artifacts
 | `lint` | Lint with Ruff (installs dev group if needed) |
 | `typecheck` | Run {{ cookiecutter.type_checker }} (ensure dev group installed) |
 | `test` | Run pytest with coverage (ensure dev group installed) |
+{%- if cookiecutter.pre_commit_tool != "none" %}
+| `uv run {{ cookiecutter.pre_commit_tool }} install --prepare-hooks -f` | Install Git hooks and prepare hook environments |
+| `uv run {{ cookiecutter.pre_commit_tool }} run --all-files` | Run the configured hooks across the repo |
+{%- endif %}
 | `jupyter` | Launch JupyterLab (syncs notebooks group{% if cookiecutter.include_notebook_ux == "yes" %} and enables rich inspector help{% endif %}) |
 | `docs` | Build Sphinx docs (syncs docs group) |
 | `latexpdf` | Build Sphinx PDF docs (syncs docs group) |
@@ -191,8 +218,14 @@ make -C docs clean    # removes Sphinx build artifacts
 1. Fork & clone
 2. `make install`
 3. Create a feature branch
+{%- if cookiecutter.pre_commit_tool != "none" %}
+4. `uv run {{ cookiecutter.pre_commit_tool }} run --all-files`
+5. `make fmt lint typecheck test`
+6. Open a pull request
+{%- else %}
 4. `make fmt lint typecheck test`
 5. Open a pull request
+{%- endif %}
 
 ## License
 

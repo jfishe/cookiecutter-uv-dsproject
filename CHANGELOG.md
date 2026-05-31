@@ -6,6 +6,19 @@ All notable changes to this project will be documented in this file.
 
 These release notes summarize changes since `v2.1.0`.
 
+### Changed
+
+- Replaced the old yes/no hook toggle with a `pre_commit_tool`
+  template option supporting `prek` (default), `pre-commit`, or
+  `none`, and now only generate `.pre-commit-config.yaml` when a
+  runner is selected.
+
+### BREAKING CHANGE
+
+- Replaced `include_pre_commit` with `pre_commit_tool`, so existing
+  Cookiecutter `--replay` data and saved contexts using the old
+  variable will no longer render without updating that setting.
+
 ## [v2.1.0]
 
 ### Fixed

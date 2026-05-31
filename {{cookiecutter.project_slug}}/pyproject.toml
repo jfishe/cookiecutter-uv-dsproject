@@ -34,7 +34,11 @@ dev = [
     "ty>=0.0.39",
     "joblib>=1.3",
 {%- endif %}
+{%- if cookiecutter.pre_commit_tool == "prek" %}
+    "prek>=0.4.3",
+{%- elif cookiecutter.pre_commit_tool == "pre-commit" %}
     "pre-commit>=3.7",
+{%- endif %}
 ]
 
 training = [

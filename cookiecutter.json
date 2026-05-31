@@ -15,5 +15,6 @@
   "include_docs": ["yes", "no"],
   "include_docker": ["yes", "no"],
   "include_github_actions": ["yes", "no"],
+  "pre_commit_tool": ["prek", "pre-commit", "none"],
   "initial_version": "0.1.0"
 }

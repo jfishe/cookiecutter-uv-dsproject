@@ -144,8 +144,9 @@ syntax to execute specific tests.
   tool declarations.
 - hooks/ — cookiecutter hooks that affect the generated
   repository state.
-- .pre-commit-config.yaml — pre-commit hooks used by generated
-  projects. Major hooks in the template include:
+- .pre-commit-config.yaml — optional hook config used by generated
+  projects when `pre_commit_tool` is `prek` or `pre-commit`.
+  Major hooks in the template include:
   - pre-commit-hooks: basic checks such as trailing-whitespace,
     end-of-file-fixer, and check-yaml.
   - pyproject-fmt: formatting for pyproject.toml.

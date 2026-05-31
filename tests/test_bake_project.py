@@ -64,6 +64,8 @@ class TestBasicBake:
         assert 'name = "test-project"' in text
         assert 'requires-python = ">=3.10"' in text
         assert '"mypy>=1.10"' in text
+        assert '"prek>=0.4.3"' in text
+        assert '"pre-commit>=3.7"' not in text
         assert "[tool.mypy]" in text
         assert "[tool.ruff.lint.pydocstyle]" in text
         assert 'convention = "numpy"' in text
@@ -166,6 +168,16 @@ class TestFeatureToggles:
         result = _bake(cookies, include_github_actions="no")
         assert not (result.project_path / ".github").exists()
 
+    def test_pre_commit_tool_none(self, cookies: Cookies) -> None:
+        result = _bake(cookies, pre_commit_tool="none")
+        assert not (result.project_path / ".pre-commit-config.yaml").exists()
+        pyproject = (result.project_path / "pyproject.toml").read_text()
+        assert "prek>=" not in pyproject
+        assert "pre-commit>=" not in pyproject
+        readme = (result.project_path / "README.md").read_text()
+        assert "uv run prek install --prepare-hooks -f" not in readme
+        assert "uv run pre-commit install --prepare-hooks -f" not in readme
+
     def test_no_notebooks_removes_ipynb(self, cookies: Cookies) -> None:
         result = _bake(cookies, include_notebooks="no")
         assert not (
@@ -217,6 +229,22 @@ class TestFeatureToggles:
         readme = (result.project_path / "README.md").read_text()
         assert "ruff, ty, standard hooks" in readme
         assert "Run ty (ensure dev group installed)" in readme
+        assert "uv run prek install --prepare-hooks -f" in readme
+
+    def test_pre_commit_runner_option(self, cookies: Cookies) -> None:
+        result = _bake(cookies, pre_commit_tool="pre-commit")
+
+        pyproject = (result.project_path / "pyproject.toml").read_text()
+        assert '"pre-commit>=3.7"' in pyproject
+        assert '"prek>=0.4.3"' not in pyproject
+
+        pre_commit = result.project_path / ".pre-commit-config.yaml"
+        assert pre_commit.is_file()
+
+        readme = (result.project_path / "README.md").read_text()
+        assert "uv run pre-commit install --prepare-hooks -f" in readme
+        assert "uv run pre-commit run --all-files" in readme
+        assert "uv run prek install --prepare-hooks -f" not in readme
 
 
 # ---------------------------------------------------------------------------
