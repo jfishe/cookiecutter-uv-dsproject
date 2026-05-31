@@ -13,7 +13,7 @@ def test_version_is_string() -> None:
 
 def test_importable() -> None:
     """Verify the package can be imported without errors."""
-    import {{ cookiecutter.package_name }}  # noqa: F401
-    import {{ cookiecutter.package_name }}.dataset  # noqa: F401
-    import {{ cookiecutter.package_name }}.features  # noqa: F401
+    import {{ cookiecutter.package_name }}
+    import {{ cookiecutter.package_name }}.dataset
+    import {{ cookiecutter.package_name }}.features
     import {{ cookiecutter.package_name }}.modeling  # noqa: F401

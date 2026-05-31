@@ -1,11 +1,13 @@
 # {{ cookiecutter.project_name }}
 
 <!-- docs:badges:start -->
+
 [![CI](https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.project_slug }}/actions/workflows/ci.yml/badge.svg)](https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.project_slug }}/actions/workflows/ci.yml)
 [![Python {{ cookiecutter.min_python_version }}+](https://img.shields.io/badge/python-{{ cookiecutter.min_python_version }}%2B-blue.svg)](https://www.python.org/downloads/)
 {%- if cookiecutter.license != "Proprietary" %}
 [![License: {{ cookiecutter.license }}](https://img.shields.io/badge/license-{{ cookiecutter.license | replace("-", "--") }}-green.svg)](https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.project_slug }}/blob/main/LICENSE)
 {%- endif %}
+
 <!-- docs:badges:end -->
 
 > {{ cookiecutter.project_description }}
@@ -118,8 +120,7 @@ Launch JupyterLab with the project virtualenv kernel:
 ```bash
 make jupyter
 ```
-
-{%- if cookiecutter.include_notebook_ux == "yes" %}
+{% if cookiecutter.include_notebook_ux == "yes" %}
 The generated project also enables richer JupyterLab inspector help
 with a project-local IPython config and `docrepr`.
 Open the inspector with `Ctrl+I` (`Cmd+I` on macOS) for HTML-rendered
@@ -196,40 +197,40 @@ make -C docs clean    # removes Sphinx build artifacts
 
 ## Makefile Targets
 
-| Target | Description |
-|---|---|
-| `install` | `uv python install {{ cookiecutter.python_version }} && uv sync --python {{ cookiecutter.python_version }} --all-groups` |
-| `fmt` | Auto-format with Ruff (installs dev group if needed) |
-| `lint` | Lint with Ruff (installs dev group if needed) |
-| `typecheck` | Run {{ cookiecutter.type_checker }} (ensure dev group installed) |
-| `test` | Run pytest with coverage (ensure dev group installed) |
+- `install`: `uv python install {{ cookiecutter.python_version }} && uv sync --python {{ cookiecutter.python_version }} --all-groups`
+- `fmt`: Auto-format with Ruff (installs dev group if needed)
+- `lint`: Lint with Ruff (installs dev group if needed)
+- `typecheck`: Run {{ cookiecutter.type_checker }} (ensure dev group installed)
+- `test`: Run pytest with coverage (ensure dev group installed)
 {%- if cookiecutter.pre_commit_tool != "none" %}
-| `uv run {{ cookiecutter.pre_commit_tool }} install --prepare-hooks -f` | Install Git hooks and prepare hook environments |
-| `uv run {{ cookiecutter.pre_commit_tool }} run --all-files` | Run the configured hooks across the repo |
+- `uv run {{ cookiecutter.pre_commit_tool }} install --prepare-hooks -f`:
+  Install Git hooks and prepare hook environments
+- `uv run {{ cookiecutter.pre_commit_tool }} run --all-files`:
+  Run the configured hooks across the repo
 {%- endif %}
-| `jupyter` | Launch JupyterLab (syncs notebooks group{% if cookiecutter.include_notebook_ux == "yes" %} and enables rich inspector help{% endif %}) |
-| `docs` | Build Sphinx docs (syncs docs group) |
-| `latexpdf` | Build Sphinx PDF docs (syncs docs group) |
-| `docker-build` | Build Docker image |
-| `clean` | Remove caches & build artifacts |
+- `jupyter`: Launch JupyterLab (syncs notebooks group{% if cookiecutter.include_notebook_ux == "yes" %}
+  and enables rich inspector help{% endif %})
+- `docs`: Build Sphinx docs (syncs docs group)
+- `latexpdf`: Build Sphinx PDF docs (syncs docs group)
+- `docker-build`: Build Docker image
+- `clean`: Remove caches and build artifacts
 
 ## Contributing
 
 1. Fork & clone
-2. `make install`
-3. Create a feature branch
+1. `make install`
+1. Create a feature branch
 {%- if cookiecutter.pre_commit_tool != "none" %}
-4. `uv run {{ cookiecutter.pre_commit_tool }} run --all-files`
-5. `make fmt lint typecheck test`
-6. Open a pull request
+1. `uv run {{ cookiecutter.pre_commit_tool }} run --all-files`
+1. `make fmt lint typecheck test`
+1. Open a pull request
 {%- else %}
-4. `make fmt lint typecheck test`
-5. Open a pull request
+1. `make fmt lint typecheck test`
+1. Open a pull request
 {%- endif %}
 
 ## License
-
-{%- if cookiecutter.license == "Proprietary" %}
+{% if cookiecutter.license == "Proprietary" %}
 Proprietary — see the repository license file.
 {%- else %}
 [{{ cookiecutter.license }}](https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.project_slug }}/blob/main/LICENSE)

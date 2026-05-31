@@ -23,9 +23,6 @@ from pathlib import Path
 # Project imports (package is installed via `uv sync`)
 # ---------------------------------------------------------------------------
 import {{ cookiecutter.package_name }}
-from {{ cookiecutter.package_name }}.dataset import load_processed
-from {{ cookiecutter.package_name }}.features import build_features
-from {{ cookiecutter.package_name }}.modeling import save_metrics, save_model
 
 _logger = logging.getLogger(__name__)
 
@@ -33,6 +30,7 @@ _logger = logging.getLogger(__name__)
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
+
 
 def _load_config(path: Path) -> dict:
     """Load a YAML or JSON config file."""
@@ -51,18 +49,22 @@ def _load_config(path: Path) -> dict:
 # Main
 # ---------------------------------------------------------------------------
 
+
 def main(argv: list[str] | None = None) -> None:
+    """Parse CLI args and run the training entry point."""
     parser = argparse.ArgumentParser(
         description="Train a model for {{ cookiecutter.project_name }}.",
     )
     parser.add_argument(
-        "-c", "--config",
+        "-c",
+        "--config",
         required=True,
         type=Path,
         help="Path to a YAML/JSON config file (e.g. configs/experiment.yaml).",
     )
     parser.add_argument(
-        "-v", "--verbose",
+        "-v",
+        "--verbose",
         action="count",
         default=0,
         help="Increase log verbosity (-v = INFO, -vv = DEBUG).",
@@ -70,7 +72,7 @@ def main(argv: list[str] | None = None) -> None:
     parser.add_argument(
         "--version",
         action="version",
-        version=f"%(prog)s ({ cookiecutter.package_name }} {  {{ cookiecutter.package_name }}.__version__})",
+        version="%(prog)s ({{ cookiecutter.package_name }} " + {{ cookiecutter.package_name }}.__version__ + ")",
     )
     args = parser.parse_args(argv)
 

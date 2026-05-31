@@ -10,6 +10,7 @@ class Parser(RstParser):
     """Parse NumPy-style docstrings after converting them to reStructuredText."""
 
     def parse(self, inputstring: str, document) -> None:  # type: ignore[override]
+        """Convert NumPy-style docstrings before handing them to docutils."""
         config = Config(
             napoleon_google_docstring=False,
             napoleon_numpy_docstring=True,

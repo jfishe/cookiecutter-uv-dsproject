@@ -6,6 +6,7 @@ inside JupyterLab and also exports cleanly through ``nbconvert``.
 
 from __future__ import annotations
 
+import importlib.util
 from dataclasses import dataclass
 
 import pandas as pd
@@ -39,7 +40,7 @@ def display_dataframe(
     precision: int = 3,
     max_rows: int | None = 20,
     na_rep: str = "—",
-) -> "DataFrameDisplay":
+) -> DataFrameDisplay:
     """Return a rich display wrapper for notebook and nbconvert output.
 
     Parameters
@@ -79,16 +80,17 @@ def display_dataframe(
 
 def _preview_dataframe(df: pd.DataFrame, *, max_rows: int | None) -> pd.DataFrame:
     if max_rows is None or len(df) <= max_rows:
-        return df.copy()
-    return df.head(max_rows).copy()
+        preview: pd.DataFrame = df.copy()
+        return preview
+
+    preview = df.head(max_rows).copy()
+    return preview
 
 
 def _require_styler_dependencies() -> None:
-    try:
-        import jinja2  # noqa: F401
-    except ImportError as exc:
+    if importlib.util.find_spec("jinja2") is None:
         msg = "display_dataframe() requires jinja2; install the notebooks group."
-        raise RuntimeError(msg) from exc
+        raise RuntimeError(msg)
 
 
 @dataclass(slots=True)
@@ -103,6 +105,7 @@ class DataFrameDisplay:
     na_rep: str
 
     def __repr__(self) -> str:
+        """Return the plain-text preview for terminal and notebook fallbacks."""
         return self._plain_text()
 
     def _repr_mimebundle_(
@@ -124,14 +127,14 @@ class DataFrameDisplay:
         body = self.preview.to_string()
         if len(self.preview) == self.total_rows:
             return body
-        return (
-            f"Showing first {len(self.preview)} of {self.total_rows} rows.\n\n"
-            f"{body}"
-        )
+        return f"Showing first {len(self.preview)} of {self.total_rows} rows.\n\n" f"{body}"
 
     def _styler(self) -> pd.io.formats.style.Styler:
         _require_styler_dependencies()
-        styler = self.preview.style.format(precision=self.precision, na_rep=self.na_rep)
+        styler: pd.io.formats.style.Styler = self.preview.style.format(
+            precision=self.precision,
+            na_rep=self.na_rep,
+        )
         if self.caption is not None:
             styler = styler.set_caption(self.caption)
         return styler

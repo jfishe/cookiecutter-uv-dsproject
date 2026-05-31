@@ -87,15 +87,16 @@
 
     - gitlint on commit-msg for Conventional Commits.
 
-    - `mirrors-mypy` with `pandas-stubs` and
-      `--config-file=pyproject.toml`, or a local `ty` hook via
-      `uv run ty check src/`.
+    - `mirrors-mypy` with `pandas-stubs`, `joblib-stubs`, and
+      `mypy --config-file=pyproject.toml src/`, or a local `ty`
+      hook via `uv run ty check src/`.
 
   - Type checking options
 
     - The default `mypy` option installs `pandas-stubs` and
-      `joblib-stubs` in the `dev` dependency-group so mypy can
-      type-check commonly used DS libraries.
+      `joblib-stubs` in the `dev` dependency-group, and the
+      generated hook type-checks `src/` directly so
+      `prek run --all-files mypy` works without extra arguments.
 
     - The `ty` option installs `ty` plus `joblib` in the `dev`
       dependency-group and adds a minimal `[tool.ty]` configuration

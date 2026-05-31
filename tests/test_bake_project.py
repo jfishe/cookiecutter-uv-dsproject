@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import json
 import re
+import subprocess
 from pathlib import Path
 from typing import TYPE_CHECKING
 
@@ -67,8 +68,14 @@ class TestBasicBake:
         assert '"prek>=0.4.3"' in text
         assert '"pre-commit>=3.7"' not in text
         assert "[tool.mypy]" in text
-        assert "[tool.ruff.lint.pydocstyle]" in text
+        assert 'lint.pydocstyle.convention = "numpy"' in text
         assert 'convention = "numpy"' in text
+
+        pre_commit = (result.project_path / ".pre-commit-config.yaml").read_text()
+        assert "id: mypy" in pre_commit
+        assert "additional_dependencies: [pandas-stubs, joblib-stubs]" in pre_commit
+        assert 'args: ["--config-file=pyproject.toml", "src/"]' in pre_commit
+        assert "pass_filenames: false" in pre_commit
 
     def test_starter_notebook_exists(self, cookies: Cookies) -> None:
         result = _bake(cookies)
@@ -202,10 +209,10 @@ class TestFeatureToggles:
         assert '"joblib>=1.3"' in pyproject
         assert "[tool.ty.environment]" in pyproject
         assert 'python-version = "3.10"' in pyproject
-        assert 'include = ["src"]' in pyproject
+        assert 'include = [ "src" ]' in pyproject
         assert '"mypy>=1.10"' not in pyproject
         assert "[tool.mypy]" not in pyproject
-        assert "pandas-stubs>=2.0" not in pyproject
+        assert "pandas-stubs>=2" not in pyproject
         assert "joblib-stubs>=1.5.2.0.20250831" not in pyproject
 
         pre_commit = (result.project_path / ".pre-commit-config.yaml").read_text()
@@ -289,7 +296,7 @@ class TestContent:
     def test_notebook_ux_is_documented(self, cookies: Cookies) -> None:
         result = _bake(cookies)
         pyproject = (result.project_path / "pyproject.toml").read_text()
-        assert "nbdime>=4.0" in pyproject
+        assert "nbdime>=4" in pyproject
         assert "jinja2>=3.1" in pyproject
         assert "docrepr>=0.2" in pyproject
         readme = (result.project_path / "README.md").read_text()
@@ -309,11 +316,34 @@ class TestContent:
         assert "def display_dataframe" in helper
         assert 'msg = "label requires a caption"' in helper
         assert '"text/latex": styler.to_latex(' in helper
+        assert 'find_spec("jinja2") is None' in helper
+
+    def test_default_project_mypy_typechecks(self, cookies: Cookies) -> None:
+        result = _bake(cookies)
+        completed = subprocess.run(
+            ["uv", "run", "mypy", "src/"],
+            cwd=result.project_path,
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+        assert completed.returncode == 0, completed.stdout + completed.stderr
+
+    def test_default_project_prek_hooks_pass(self, cookies: Cookies) -> None:
+        result = _bake(cookies)
+        completed = subprocess.run(
+            ["uv", "run", "prek", "run", "--all-files"],
+            cwd=result.project_path,
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+        assert completed.returncode == 0, completed.stdout + completed.stderr
 
     def test_docs_starter_files_match_template(self, cookies: Cookies) -> None:
         result = _bake(cookies, include_docs="yes")
         pyproject = (result.project_path / "pyproject.toml").read_text()
-        assert '"linkify-it-py>=2.0"' in pyproject
+        assert '"linkify-it-py>=2"' in pyproject
         makefile = (result.project_path / "Makefile").read_text()
         assert "$(MAKE) -C docs html" in makefile
         assert "$(MAKE) -C docs latexpdf" in makefile
@@ -346,6 +376,7 @@ class TestContent:
         assert "<!-- docs:badges:start -->" in readme
         assert "<!-- docs:badges:end -->" in readme
         docs_readme = (result.project_path / "docs" / "readme.md").read_text()
+        assert "<!-- markdownlint-disable-file MD041 -->" in docs_readme
         assert ":end-before: <!-- docs:badges:start -->" in docs_readme
         assert ":start-after: <!-- docs:badges:end -->" in docs_readme
         docs_makefile = (result.project_path / "docs" / "Makefile").read_text()

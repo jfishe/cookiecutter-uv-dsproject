@@ -2,11 +2,21 @@
 
 All notable changes to this project will be documented in this file.
 
+<!-- markdownlint-disable MD024 -->
+
 ## [Unreleased]
 
 These release notes summarize changes since `v3.0.0`.
 
-No changes yet.
+### Fixed
+
+- Fixed the generated `mirrors-mypy` hook to target `src/` explicitly
+  when `pass_filenames: false` is enabled, so
+  `prek run --all-files mypy` no longer fails with a missing-target
+  error.
+- Fixed the generated notebook display helper to satisfy the template's
+  default mypy configuration, allowing freshly baked projects to pass
+  their initial type-check run.
 
 ## [v3.0.0]
 

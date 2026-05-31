@@ -1,86 +1,103 @@
 [build-system]
-requires = ["hatchling"]
 build-backend = "hatchling.build"
+requires = [ "hatchling" ]
 
 [project]
 name = "{{ cookiecutter.project_slug }}"
 version = "{{ cookiecutter.initial_version }}"
 description = "{{ cookiecutter.project_description }}"
 readme = "README.md"
-requires-python = ">={{ cookiecutter.min_python_version }}"
 {%- if cookiecutter.license != "Proprietary" %}
 license = "{{ cookiecutter.license }}"
 {%- endif %}
-authors = [{ name = "{{ cookiecutter.author_name }}", email = "{{ cookiecutter.author_email }}" }]
+authors = [ { name = "{{ cookiecutter.author_name }}", email = "{{ cookiecutter.author_email }}" } ]
+requires-python = ">={{ cookiecutter.min_python_version }}"
 classifiers = [
-    "Development Status :: 3 - Alpha",
-    "Programming Language :: Python :: 3",
+  "Development Status :: 3 - Alpha",
+  "Programming Language :: Python :: 3 :: Only",
+{%- if cookiecutter.min_python_version == "3.10" %}
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+{%- elif cookiecutter.min_python_version == "3.11" %}
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+{%- elif cookiecutter.min_python_version == "3.12" %}
+  "Programming Language :: Python :: 3.12",
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+{%- elif cookiecutter.min_python_version == "3.13" %}
+  "Programming Language :: Python :: 3.13",
+  "Programming Language :: Python :: 3.14",
+{%- else %}
+  "Programming Language :: Python :: 3.14",
+{%- endif %}
 ]
 dependencies = [
-    "pandas>=2.0",
+  "pandas>=2",
 ]
+urls.Homepage = "https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.project_slug }}"
+urls.Issues = "https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.project_slug }}/issues"
+urls.Repository = "https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.project_slug }}"
 
 [dependency-groups]
-
 dev = [
-    "pytest>=8.0",
-    "pytest-cov>=5.0",
-    "ruff>=0.4",
 {%- if cookiecutter.type_checker == "mypy" %}
-    "mypy>=1.10",
-    "pandas-stubs>=2.0",
-    "joblib-stubs>=1.5.2.0.20250831",
+  "joblib-stubs>=1.5.2.0.20250831",
+  "mypy>=1.10",
+  "pandas-stubs>=2",
 {%- else %}
-    "ty>=0.0.39",
-    "joblib>=1.3",
+  "joblib>=1.3",
+  "ty>=0.0.39",
 {%- endif %}
 {%- if cookiecutter.pre_commit_tool == "prek" %}
-    "prek>=0.4.3",
+  "prek>=0.4.3",
 {%- elif cookiecutter.pre_commit_tool == "pre-commit" %}
-    "pre-commit>=3.7",
+  "pre-commit>=3.7",
 {%- endif %}
+  "pytest>=8",
+  "pytest-cov>=5",
+  "ruff>=0.4",
 ]
-
-training = [
-    "scikit-learn>=1.4",
-    "joblib>=1.3",
-    "pyyaml>=6.0",
-]
-
-{%- if cookiecutter.include_notebooks == "yes" %}
-notebooks = [
-    "jupyterlab>=4.0",
-    "ipykernel>=6.0",
-    "jinja2>=3.1",
-    "matplotlib>=3.8",
-    "seaborn>=0.13",
-    "nbdime>=4.0",
-{%- if cookiecutter.include_notebook_ux == "yes" %}
-    "docrepr>=0.2",
-{%- endif %}
-]
-{%- endif %}
 
 {%- if cookiecutter.include_docs == "yes" %}
 docs = [
-    "sphinx>=7.0",
-    "myst-parser>=3.0",
-    "linkify-it-py>=2.0",
-    "sphinx-autodoc2>=0.5",
-    "furo>=2024.1",
+  "furo>=2024.1",
+  "linkify-it-py>=2",
+  "myst-parser>=3",
+  "sphinx>=7",
+  "sphinx-autodoc2>=0.5",
 ]
 {%- endif %}
 
-[project.urls]
-Homepage = "https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.project_slug }}"
-Repository = "https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.project_slug }}"
-Issues = "https://github.com/{{ cookiecutter.github_username }}/{{ cookiecutter.project_slug }}/issues"
+{%- if cookiecutter.include_notebooks == "yes" %}
+notebooks = [
+{%- if cookiecutter.include_notebook_ux == "yes" %}
+  "docrepr>=0.2",
+{%- endif %}
+  "ipykernel>=6",
+  "jinja2>=3.1",
+  "jupyterlab>=4",
+  "matplotlib>=3.8",
+  "nbdime>=4",
+  "seaborn>=0.13",
+]
+{%- endif %}
+training = [
+  "joblib>=1.3",
+  "pyyaml>=6",
+  "scikit-learn>=1.4",
+]
 
+[tool.hatch]
 # ---------------------------------------------------------------------------
 # Hatchling — src layout
 # ---------------------------------------------------------------------------
-[tool.hatch.build.targets.wheel]
-packages = ["src/{{ cookiecutter.package_name }}"]
+build.targets.wheel.packages = [ "src/{{ cookiecutter.package_name }}" ]
 
 # ---------------------------------------------------------------------------
 # Ruff
@@ -88,49 +105,29 @@ packages = ["src/{{ cookiecutter.package_name }}"]
 [tool.ruff]
 target-version = "py{{ cookiecutter.min_python_version | replace('.', '') }}"
 line-length = 99
-src = ["src", "tests"]
-
-[tool.ruff.lint]
-select = [
-    "F",      # pyflakes
-    "E", "W", # pycodestyle
-    "I",      # isort
-    "N",      # pep8-naming
-    "UP",     # pyupgrade
-    "B",      # flake8-bugbear
-    "A",      # flake8-builtins
-    "C4",     # flake8-comprehensions
-    "SIM",    # flake8-simplify
-    "S",      # flake8-bandit
-    "T20",    # flake8-print
-    "D",      # pydocstyle
-    "RUF",    # ruff-specific
-    "PTH",    # flake8-use-pathlib
+src = [ "src", "tests" ]
+lint.select = [
+  "A",   # flake8-builtins
+  "B",   # flake8-bugbear
+  "C4",  # flake8-comprehensions
+  "D",   # pydocstyle
+  "E",
+  "F",   # pyflakes
+  "I",   # isort
+  "N",   # pep8-naming
+  "PTH", # flake8-use-pathlib
+  "RUF", # ruff-specific
+  "S",   # flake8-bandit
+  "SIM", # flake8-simplify
+  "T20", # flake8-print
+  "UP",  # pyupgrade
+  "W",   # pycodestyle
 ]
-ignore = ["D100", "D104", "D203", "D213"]
-
-[tool.ruff.lint.pydocstyle]
-convention = "numpy"
-
-[tool.ruff.lint.per-file-ignores]
-"tests/**" = ["S101", "D"]
-
-# ---------------------------------------------------------------------------
-# pytest
-# ---------------------------------------------------------------------------
-[tool.pytest.ini_options]
-testpaths = ["tests"]
-addopts = "--strict-markers --tb=short -q"
-
-# ---------------------------------------------------------------------------
-# coverage
-# ---------------------------------------------------------------------------
-[tool.coverage.run]
-source = ["src/{{ cookiecutter.package_name }}"]
-
-[tool.coverage.report]
-show_missing = true
-fail_under = 50
+lint.ignore = [ "D100", "D104", "D203", "D213" ]
+lint.per-file-ignores.".ipython/profile_default/ipython_config.py" = [ "F821" ]
+lint.per-file-ignores."notebooks/**/*.ipynb" = [ "E402", "F401", "I001", "T201" ]
+lint.per-file-ignores."tests/**" = [ "D", "S101" ]
+lint.pydocstyle.convention = "numpy"
 
 # ---------------------------------------------------------------------------
 # {{ cookiecutter.type_checker }}
@@ -146,5 +143,20 @@ warn_unused_configs = true
 python-version = "{{ cookiecutter.min_python_version }}"
 
 [tool.ty.src]
-include = ["src"]
+include = [ "src" ]
 {%- endif %}
+
+[tool.pytest]
+# ---------------------------------------------------------------------------
+# pytest
+# ---------------------------------------------------------------------------
+ini_options.testpaths = [ "tests" ]
+ini_options.addopts = "--strict-markers --tb=short -q"
+
+[tool.coverage]
+# ---------------------------------------------------------------------------
+# coverage
+# ---------------------------------------------------------------------------
+run.source = [ "src/{{ cookiecutter.package_name }}" ]
+report.fail_under = 50
+report.show_missing = true
