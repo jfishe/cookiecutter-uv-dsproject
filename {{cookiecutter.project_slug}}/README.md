@@ -125,6 +125,9 @@ The generated project also enables richer JupyterLab inspector help
 with a project-local IPython config and `docrepr`.
 Open the inspector with `Ctrl+I` (`Cmd+I` on macOS) for HTML-rendered
 docstrings while you type.
+That `ipython_config.py` file follows IPython's normal config-loader
+convention, so Ruff ignores `F821` for that one file rather than
+requiring an explicit `get_config()` import.
 {%- endif %}
 The notebooks dependency group also includes `nbdime` for notebook-aware
 diff and merge tooling in Jupyter and Git workflows.

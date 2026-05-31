@@ -34,6 +34,9 @@
 
   - Optional JupyterLab inspector enhancements with `docrepr`
     and a project-local IPython config.
+  - Ruff ignores `F821` for that generated IPython profile so it can use
+    IPython's loader-provided `get_config()` helper without an explicit
+    import.
   - Inspired by Martin Renou's
     ["Inspector JupyterLab"](https://blog.jupyter.org/inspector-jupyterlab-404cce3e1df6)
     on the Jupyter Blog.

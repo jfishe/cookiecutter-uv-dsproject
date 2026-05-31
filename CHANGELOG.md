@@ -17,6 +17,9 @@ These release notes summarize changes since `v3.0.0`.
 - Fixed the generated notebook display helper to satisfy the template's
   default mypy configuration, allowing freshly baked projects to pass
   their initial type-check run.
+- Fixed the generated IPython profile config to keep the standard
+  `get_config()` loader pattern, and configured Ruff to ignore `F821`
+  for that file instead of requiring an explicit import.
 
 ## [v3.0.0]
 
