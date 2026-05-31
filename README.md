@@ -57,7 +57,7 @@
 
   - Sphinx + MyST + Furo + autodoc2 (optional).
   - Generated projects include a `.readthedocs.yaml` that builds docs with
-    `uv sync --group docs`.
+    `uv sync --python <selected-version> --group docs`.
   - PDF output via Sphinx LaTeX requires a TeX toolchain such as
     `latexmk`, `texlive-xetex`, and `xindy`.
 
@@ -102,7 +102,9 @@
       `types-<pkg>` or `<pkg>-stubs`) into the `dev` group.
 
     - To run type checks locally, ensure the `dev` group is
-      installed first: `uv sync --group dev` or `make typecheck`.
+      installed first with the selected Python version, for example
+      `uv sync --python <selected-version> --group dev`, or use
+      `make typecheck`.
 
 - Makefile
 
@@ -118,7 +120,7 @@ uv tool install cookiecutter
 # Generate a project
 cookiecutter gh:jfishe/cookiecutter-uv-dsproject
 
-# The post-hook runs git init + uv sync automatically
+# The post-hook runs git init + uv sync with the selected Python automatically
 cd my-ds-project
 uv run pytest
 ```

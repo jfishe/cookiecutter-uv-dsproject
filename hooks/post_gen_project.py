@@ -15,6 +15,7 @@ INCLUDE_NOTEBOOK_UX = "{{ cookiecutter.include_notebook_ux }}" == "yes"
 INCLUDE_DOCS = "{{ cookiecutter.include_docs }}" == "yes"
 INCLUDE_DOCKER = "{{ cookiecutter.include_docker }}" == "yes"
 INCLUDE_GITHUB_ACTIONS = "{{ cookiecutter.include_github_actions }}" == "yes"
+PYTHON_VERSION = "{{ cookiecutter.python_version }}"
 
 
 def _remove(rel_path: str) -> None:
@@ -58,7 +59,14 @@ def uv_sync() -> None:
         print("⚠  uv not found on PATH — skipping lock & sync.", file=sys.stderr)
         print("   Install uv: https://docs.astral.sh/uv/getting-started/installation/")
         return
-    subprocess.run(["uv", "sync", "--all-extras"], cwd=PROJECT_DIR, check=False)
+    subprocess.run(
+        ["uv", "python", "install", PYTHON_VERSION], cwd=PROJECT_DIR, check=False
+    )
+    subprocess.run(
+        ["uv", "sync", "--all-extras", "--python", PYTHON_VERSION],
+        cwd=PROJECT_DIR,
+        check=False,
+    )
 
 
 def main() -> None:

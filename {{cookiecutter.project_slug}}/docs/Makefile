@@ -1,6 +1,7 @@
 # Minimal Sphinx makefile for generated projects.
 
-UV_SYNC_DOCS ?= uv sync --group docs
+UV_PROJECT_PYTHON ?= {{ cookiecutter.python_version }}
+UV_SYNC_DOCS ?= uv sync --python $(UV_PROJECT_PYTHON) --group docs
 SPHINXBUILD ?= uv run sphinx-build
 SPHINXOPTS ?=
 SOURCEDIR = .

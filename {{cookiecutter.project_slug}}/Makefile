@@ -1,10 +1,12 @@
 .DEFAULT_GOAL := help
 SHELL := /bin/bash
 
-# Ensure tools from the 'dev' dependency-group are available when
+# Ensure tools from the selected Python version are available when
 # running code-quality and test targets. Use uv sync --group to
 # install only the needed groups quickly.
-UV_SYNC_DEV ?= uv sync --group dev
+UV_PROJECT_PYTHON ?= {{ cookiecutter.python_version }}
+UV_SYNC ?= uv sync --python $(UV_PROJECT_PYTHON)
+UV_SYNC_DEV ?= $(UV_SYNC) --group dev
 
 .PHONY: help install fmt lint typecheck test jupyter docs latexpdf clean
 {%- if cookiecutter.include_docker == "yes" %}
@@ -16,7 +18,8 @@ help: ## Show this help
 		awk 'BEGIN {FS = ":.*?## "}; {printf "\t\033[36m%-15s\033[0m %s\n", $$1, $$2}'
 
 install: ## Install all dependency-groups
-	uv sync --all-groups
+	uv python install $(UV_PROJECT_PYTHON)
+	$(UV_SYNC) --all-groups
 
 fmt: ## Auto-format code with Ruff (ensure dev tools installed)
 	$(UV_SYNC_DEV)
@@ -41,7 +44,7 @@ test: ## Run tests with coverage (ensure dev tools installed)
 	uv run pytest --cov --cov-report=term-missing
 
 jupyter: ## Launch JupyterLab (will try to install notebooks group)
-	uv sync --group notebooks || true
+	$(UV_SYNC) --group notebooks || true
 {%- if cookiecutter.include_notebooks == "yes" and cookiecutter.include_notebook_ux == "yes" %}
 	IPYTHONDIR=.ipython uv run jupyter lab --notebook-dir=notebooks
 {%- else %}

@@ -7,8 +7,6 @@ import re
 from pathlib import Path
 from typing import TYPE_CHECKING
 
-import pytest
-
 if TYPE_CHECKING:
     from pytest_cookies.plugin import Cookies, Result
 
@@ -16,6 +14,7 @@ if TYPE_CHECKING:
 # ---------------------------------------------------------------------------
 # Helpers
 # ---------------------------------------------------------------------------
+
 
 def _bake(cookies: Cookies, **overrides: str) -> Result:
     defaults = {
@@ -31,6 +30,7 @@ def _bake(cookies: Cookies, **overrides: str) -> Result:
 # ---------------------------------------------------------------------------
 # Structure & basics
 # ---------------------------------------------------------------------------
+
 
 class TestBasicBake:
     def test_bake_exits_zero(self, cookies: Cookies) -> None:
@@ -83,12 +83,17 @@ class TestBasicBake:
             "revision": "0",
         }
         notebook_source = "\n".join("".join(cell["source"]) for cell in data["cells"])
-        assert "from test_project.display import configure_notebook_display, display_dataframe" in notebook_source
+        assert (
+            "from test_project.display import configure_notebook_display, display_dataframe"
+            in notebook_source
+        )
         assert "configure_notebook_display()" in notebook_source
         assert 'caption="Example notebook summary"' in notebook_source
         assert r"\autoref{tab:example-notebook-summary}" in notebook_source
         table_cells = [
-            cell for cell in data["cells"] if cell.get("metadata", {}).get("table_export")
+            cell
+            for cell in data["cells"]
+            if cell.get("metadata", {}).get("table_export")
         ]
         assert len(table_cells) == 1
         table_export = table_cells[0]["metadata"]["table_export"]
@@ -104,13 +109,21 @@ class TestBasicBake:
         assert r"\usepackage{fancyhdr}" in template_text
         assert r"\fancyhead[R]{\notebookheadertext}" in template_text
         assert r"\renewcommand{\thepage}" in template_text
-        assert r"\captionsetup[table]{format=plain, font=small, labelfont=bf, labelsep=colon}" in template_text
-        assert r"\captionsetup[longtable]{format=plain, font=small, labelfont=bf, labelsep=colon}" in template_text
+        assert (
+            r"\captionsetup[table]{format=plain, font=small, labelfont=bf, labelsep=colon}"
+            in template_text
+        )
+        assert (
+            r"\captionsetup[longtable]{format=plain, font=small, labelfont=bf, labelsep=colon}"
+            in template_text
+        )
         assert '"base_template": "latex"' in latex_conf.read_text()
 
     def test_notebook_inspector_config_exists(self, cookies: Cookies) -> None:
         result = _bake(cookies)
-        config = result.project_path / ".ipython" / "profile_default" / "ipython_config.py"
+        config = (
+            result.project_path / ".ipython" / "profile_default" / "ipython_config.py"
+        )
         assert config.is_file()
         text = config.read_text()
         assert "InteractiveShell.sphinxify_docstring = True" in text
@@ -128,6 +141,7 @@ class TestBasicBake:
 # ---------------------------------------------------------------------------
 # Feature toggles
 # ---------------------------------------------------------------------------
+
 
 class TestFeatureToggles:
     def test_no_notebooks(self, cookies: Cookies) -> None:
@@ -154,7 +168,9 @@ class TestFeatureToggles:
 
     def test_no_notebooks_removes_ipynb(self, cookies: Cookies) -> None:
         result = _bake(cookies, include_notebooks="no")
-        assert not (result.project_path / "notebooks" / "getting-started.ipynb").exists()
+        assert not (
+            result.project_path / "notebooks" / "getting-started.ipynb"
+        ).exists()
 
     def test_notebook_ux_can_be_disabled(self, cookies: Cookies) -> None:
         result = _bake(cookies, include_notebook_ux="no")
@@ -183,14 +199,18 @@ class TestFeatureToggles:
         pre_commit = (result.project_path / ".pre-commit-config.yaml").read_text()
         assert "repo: local" in pre_commit
         assert "id: ty" in pre_commit
-        assert "uv run ty check src/ --output-format concise --no-progress" in pre_commit
+        assert (
+            "uv run ty check src/ --output-format concise --no-progress" in pre_commit
+        )
         assert "mirrors-mypy" not in pre_commit
 
         makefile = (result.project_path / "Makefile").read_text()
         assert "uv run ty check src/" in makefile
         assert "Type-check with ty" in makefile
 
-        workflow = (result.project_path / ".github" / "workflows" / "ci.yml").read_text()
+        workflow = (
+            result.project_path / ".github" / "workflows" / "ci.yml"
+        ).read_text()
         assert "uv run ty check src/" in workflow
         assert "uv run mypy src/" not in workflow
 
@@ -203,10 +223,13 @@ class TestFeatureToggles:
 # Content checks
 # ---------------------------------------------------------------------------
 
+
 class TestContent:
     def test_version_in_init(self, cookies: Cookies) -> None:
         result = _bake(cookies, initial_version="1.2.3")
-        init = (result.project_path / "src" / "test_project" / "__init__.py").read_text()
+        init = (
+            result.project_path / "src" / "test_project" / "__init__.py"
+        ).read_text()
         assert '"1.2.3"' in init
 
     def test_license_mit(self, cookies: Cookies) -> None:
@@ -220,7 +243,20 @@ class TestContent:
         for target in ("install", "fmt", "lint", "test", "docs", "latexpdf", "clean"):
             assert re.search(rf"^{target}:", text, re.MULTILINE)
         assert re.search(r"^docker-build:", text, re.MULTILINE)
+        assert "UV_PROJECT_PYTHON ?= 3.12" in text
+        assert "UV_SYNC ?= uv sync --python $(UV_PROJECT_PYTHON)" in text
+        assert "uv python install $(UV_PROJECT_PYTHON)" in text
+        assert "$(UV_SYNC) --all-groups" in text
         assert "IPYTHONDIR=.ipython uv run jupyter lab --notebook-dir=notebooks" in text
+
+    def test_post_gen_hook_uses_selected_python(self, cookies: Cookies) -> None:
+        _bake(cookies)
+        hook = (
+            Path(__file__).resolve().parents[1] / "hooks" / "post_gen_project.py"
+        ).read_text()
+        assert 'PYTHON_VERSION = "{{ cookiecutter.python_version }}"' in hook
+        assert '["uv", "python", "install", PYTHON_VERSION]' in hook
+        assert '["uv", "sync", "--all-extras", "--python", PYTHON_VERSION]' in hook
 
     def test_notebook_ux_is_documented(self, cookies: Cookies) -> None:
         result = _bake(cookies)
@@ -238,7 +274,9 @@ class TestContent:
 
     def test_dataframe_display_helper_exists(self, cookies: Cookies) -> None:
         result = _bake(cookies)
-        helper = (result.project_path / "src" / "test_project" / "display.py").read_text()
+        helper = (
+            result.project_path / "src" / "test_project" / "display.py"
+        ).read_text()
         assert "def configure_notebook_display" in helper
         assert "def display_dataframe" in helper
         assert 'msg = "label requires a caption"' in helper
@@ -255,7 +293,7 @@ class TestContent:
         assert '"sphinx.ext.napoleon"' in conf
         assert "napoleon_numpy_docstring = True" in conf
         assert "napoleon_use_param = False" in conf
-        assert 'autodoc2_docstring_parser_regexes = [' in conf
+        assert "autodoc2_docstring_parser_regexes = [" in conf
         assert 'source_suffix = [".rst", ".md"]' in conf
         assert '"amsmath"' in conf
         assert '"dollarmath"' in conf
@@ -269,9 +307,11 @@ class TestContent:
         assert "pdflatex" not in conf
         assert "latex_elements = {}" in conf
         assert "latex_documents = [" in conf
-        assert '{{ cookiecutter.project_slug }}.tex' not in conf
+        assert "{{ cookiecutter.project_slug }}.tex" not in conf
         assert "test-project.tex" in conf
-        parser_module = (result.project_path / "docs" / "_ext" / "napoleon_numpy_parser.py").read_text()
+        parser_module = (
+            result.project_path / "docs" / "_ext" / "napoleon_numpy_parser.py"
+        ).read_text()
         assert "class Parser(RstParser):" in parser_module
         assert "NumpyDocstring" in parser_module
         readme = (result.project_path / "README.md").read_text()
@@ -281,7 +321,11 @@ class TestContent:
         assert ":end-before: <!-- docs:badges:start -->" in docs_readme
         assert ":start-after: <!-- docs:badges:end -->" in docs_readme
         docs_makefile = (result.project_path / "docs" / "Makefile").read_text()
-        assert "UV_SYNC_DOCS ?= uv sync --group docs" in docs_makefile
+        assert "UV_PROJECT_PYTHON ?= 3.12" in docs_makefile
+        assert (
+            "UV_SYNC_DOCS ?= uv sync --python $(UV_PROJECT_PYTHON) --group docs"
+            in docs_makefile
+        )
         assert "SPHINXBUILD ?= uv run sphinx-build" in docs_makefile
         assert re.search(r"^clean:$", docs_makefile, re.MULTILINE)
         assert '@$(SPHINXBUILD) -M $@ "$(SOURCEDIR)" "$(BUILDDIR)"' in docs_makefile
@@ -298,12 +342,16 @@ class TestContent:
         assert "../LICENSE" in license_doc
         assert "LICENSE.txt" not in license_doc
 
-        features = (result.project_path / "src" / "test_project" / "features.py").read_text()
+        features = (
+            result.project_path / "src" / "test_project" / "features.py"
+        ).read_text()
         assert "Parameters\n" in features
         assert "Returns\n" in features
         assert ":param df:" not in features
 
-        modeling = (result.project_path / "src" / "test_project" / "modeling.py").read_text()
+        modeling = (
+            result.project_path / "src" / "test_project" / "modeling.py"
+        ).read_text()
         assert "Parameters\n" in modeling
         assert "Returns\n" in modeling
         assert ":param model:" not in modeling
@@ -316,6 +364,7 @@ class TestContent:
 # ---------------------------------------------------------------------------
 # Validation hooks
 # ---------------------------------------------------------------------------
+
 
 class TestValidation:
     def test_invalid_slug_fails(self, cookies: Cookies) -> None:

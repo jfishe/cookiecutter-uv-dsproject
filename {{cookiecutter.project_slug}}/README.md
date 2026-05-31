@@ -65,8 +65,8 @@
 # Install uv (if needed)
 curl -LsSf https://astral.sh/uv/install.sh | sh
 
-# Create virtualenv & install all deps
-make install          # or: uv sync --all-groups
+# Create a {{ cookiecutter.python_version }} virtualenv & install all deps
+make install          # or: uv sync --python {{ cookiecutter.python_version }} --all-groups
 
 # Run tests
 make test             # or: uv run pytest
@@ -152,7 +152,9 @@ make latexpdf         # builds docs/_build/latex/*.pdf
 ```
 
 Read the Docs can use the bundled `.readthedocs.yaml`, which installs the
-`docs` dependency group via `uv sync` and points RTD at `docs/conf.py`.
+`docs` dependency group with
+`uv sync --python {{ cookiecutter.python_version }} --group docs`
+and points RTD at `docs/conf.py`.
 
 To build PDF docs, install a TeX toolchain first.
 On Debian or Ubuntu, the minimum packages are typically:
@@ -173,7 +175,7 @@ make -C docs clean    # removes Sphinx build artifacts
 
 | Target | Description |
 |---|---|
-| `install` | `uv sync --all-groups` |
+| `install` | `uv python install {{ cookiecutter.python_version }} && uv sync --python {{ cookiecutter.python_version }} --all-groups` |
 | `fmt` | Auto-format with Ruff (installs dev group if needed) |
 | `lint` | Lint with Ruff (installs dev group if needed) |
 | `typecheck` | Run {{ cookiecutter.type_checker }} (ensure dev group installed) |
