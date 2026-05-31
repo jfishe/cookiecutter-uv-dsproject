@@ -4,6 +4,12 @@ All notable changes to this project will be documented in this file.
 
 ## [Unreleased]
 
+These release notes summarize changes since `v3.0.0`.
+
+No changes yet.
+
+## [v3.0.0]
+
 These release notes summarize changes since `v2.1.0`.
 
 ### Changed
@@ -18,6 +24,12 @@ These release notes summarize changes since `v2.1.0`.
 - Replaced `include_pre_commit` with `pre_commit_tool`, so existing
   Cookiecutter `--replay` data and saved contexts using the old
   variable will no longer render without updating that setting.
+
+### Fixed
+
+- Fixed generated setup and docs instructions to consistently use the
+  selected Python version during `uv sync`, avoiding version conflicts
+  in freshly generated projects.
 
 ## [v2.1.0]
 
@@ -72,6 +84,7 @@ Updated version in `pyproject.toml`.
 - Fixed the generated Makefile so the `docker-build` target is only
   included when Docker support is enabled.
 
-[Unreleased]: https://github.com/jfishe/cookiecutter-uv-dsproject/compare/v2.1.0...HEAD
+[Unreleased]: https://github.com/jfishe/cookiecutter-uv-dsproject/compare/v3.0.0...HEAD
+[v3.0.0]: https://github.com/jfishe/cookiecutter-uv-dsproject/compare/v2.1.0...v3.0.0
 [v2.1.0]: https://github.com/jfishe/cookiecutter-uv-dsproject/compare/v2.0.0...v2.1.0
 [v2.0.0]: https://github.com/jfishe/cookiecutter-uv-dsproject/compare/v1.0.0...v2.0.0
