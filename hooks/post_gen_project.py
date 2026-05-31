@@ -15,6 +15,7 @@ INCLUDE_NOTEBOOK_UX = "{{ cookiecutter.include_notebook_ux }}" == "yes"
 INCLUDE_DOCS = "{{ cookiecutter.include_docs }}" == "yes"
 INCLUDE_DOCKER = "{{ cookiecutter.include_docker }}" == "yes"
 INCLUDE_GITHUB_ACTIONS = "{{ cookiecutter.include_github_actions }}" == "yes"
+INCLUDE_CHANGELOG = "{{ cookiecutter.include_changelog }}" == "yes"
 PRE_COMMIT_TOOL = "{{ cookiecutter.pre_commit_tool }}"
 PYTHON_VERSION = "{{ cookiecutter.python_version }}"
 
@@ -43,6 +44,9 @@ def prune_features() -> None:
 
     if not INCLUDE_GITHUB_ACTIONS:
         _remove(".github")
+
+    if not INCLUDE_CHANGELOG:
+        _remove("CHANGELOG.md")
 
     if PRE_COMMIT_TOOL == "none":
         _remove(".pre-commit-config.yaml")

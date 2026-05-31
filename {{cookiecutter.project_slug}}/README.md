@@ -58,6 +58,9 @@
 │                                (includes pandas-stubs and joblib-stubs in dev)
 {%- endif %}
 {%- endif %}
+{%- if cookiecutter.include_changelog == "yes" %}
+├── CHANGELOG.md               ← Keep a Changelog + SemVer release notes
+{%- endif %}
 ├── .gitignore
 ├── LICENSE
 └── README.md

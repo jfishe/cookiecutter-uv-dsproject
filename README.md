@@ -59,6 +59,8 @@
 - Docs
 
   - Sphinx + MyST + Furo + autodoc2 (optional).
+  - Keep a Changelog + SemVer `CHANGELOG.md` scaffold (optional,
+    opt-in).
   - Generated projects include a `.readthedocs.yaml` that builds docs with
     `uv sync --python <selected-version> --group docs`.
   - PDF output via Sphinx LaTeX requires a TeX toolchain such as
@@ -158,8 +160,8 @@ uv run pytest
   Proprietary).
 
 - include_notebooks / include_docs / include_docker /
-  include_github_actions: `yes`/`no` flags that control optional
-  features.
+  include_github_actions / include_changelog: `yes`/`no` flags that
+  control optional features.
 
 - pre_commit_tool: `prek`/`pre-commit`/`none` — choose the generated
   Git hook runner, with `prek` as the default.
@@ -216,6 +218,7 @@ my-ds-project/
 ├── Makefile
 ├── Dockerfile
 ├── .pre-commit-config.yaml    # optional; generated unless runner=none
+├── CHANGELOG.md               # optional; generated when enabled
 ├── .gitignore
 ├── LICENSE
 └── README.md

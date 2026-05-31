@@ -175,6 +175,16 @@ class TestFeatureToggles:
         result = _bake(cookies, include_github_actions="no")
         assert not (result.project_path / ".github").exists()
 
+    def test_no_changelog(self, cookies: Cookies) -> None:
+        result = _bake(cookies, include_changelog="no")
+        assert not (result.project_path / "CHANGELOG.md").exists()
+        readme = (result.project_path / "README.md").read_text()
+        assert "Keep a Changelog + SemVer release notes" not in readme
+
+    def test_default_project_omits_changelog(self, cookies: Cookies) -> None:
+        result = _bake(cookies)
+        assert not (result.project_path / "CHANGELOG.md").exists()
+
     def test_pre_commit_tool_none(self, cookies: Cookies) -> None:
         result = _bake(cookies, pre_commit_tool="none")
         assert not (result.project_path / ".pre-commit-config.yaml").exists()
@@ -266,6 +276,24 @@ class TestContent:
             result.project_path / "src" / "test_project" / "__init__.py"
         ).read_text()
         assert '"1.2.3"' in init
+
+    def test_changelog_scaffold_uses_keepachangelog_and_semver(
+        self, cookies: Cookies
+    ) -> None:
+        result = _bake(
+            cookies, include_changelog="yes", initial_version="1.2.3"
+        )
+        changelog = (result.project_path / "CHANGELOG.md").read_text()
+        assert "https://keepachangelog.com/en/1.1.0/" in changelog
+        assert "https://semver.org/spec/v2.0.0.html" in changelog
+        assert "## [v1.2.3]" in changelog
+        assert (
+            "[unreleased]: https://github.com/testuser/test-project/compare/"
+            "v1.2.3...HEAD"
+        ) in changelog
+        assert (
+            "[v1.2.3]: https://github.com/testuser/test-project/releases/tag/v1.2.3"
+        ) in changelog
 
     def test_license_mit(self, cookies: Cookies) -> None:
         result = _bake(cookies, license="MIT")
