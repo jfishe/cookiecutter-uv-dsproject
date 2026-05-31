@@ -157,11 +157,21 @@ class TestFeatureToggles:
         result = _bake(cookies, include_notebooks="no")
         assert not (result.project_path / "notebooks").exists()
         assert not (result.project_path / ".ipython").exists()
+        makefile = (result.project_path / "Makefile").read_text()
+        assert not re.search(r"^jupyter:", makefile, re.MULTILINE)
+        readme = (result.project_path / "README.md").read_text()
+        assert "- `jupyter`:" not in readme
 
     def test_no_docs(self, cookies: Cookies) -> None:
         result = _bake(cookies, include_docs="no")
         assert not (result.project_path / "docs").exists()
         assert not (result.project_path / ".readthedocs.yaml").exists()
+        makefile = (result.project_path / "Makefile").read_text()
+        assert not re.search(r"^docs:", makefile, re.MULTILINE)
+        assert not re.search(r"^latexpdf:", makefile, re.MULTILINE)
+        readme = (result.project_path / "README.md").read_text()
+        assert "- `docs`:" not in readme
+        assert "- `latexpdf`:" not in readme
 
     def test_no_docker(self, cookies: Cookies) -> None:
         result = _bake(cookies, include_docker="no")
@@ -303,7 +313,16 @@ class TestContent:
     def test_makefile_has_targets(self, cookies: Cookies) -> None:
         result = _bake(cookies)
         text = (result.project_path / "Makefile").read_text()
-        for target in ("install", "fmt", "lint", "test", "docs", "latexpdf", "clean"):
+        for target in (
+            "install",
+            "fmt",
+            "lint",
+            "test",
+            "jupyter",
+            "docs",
+            "latexpdf",
+            "clean",
+        ):
             assert re.search(rf"^{target}:", text, re.MULTILINE)
         assert re.search(r"^docker-build:", text, re.MULTILINE)
         assert "UV_PROJECT_PYTHON ?= 3.12" in text
@@ -311,6 +330,8 @@ class TestContent:
         assert "uv python install $(UV_PROJECT_PYTHON)" in text
         assert "$(UV_SYNC) --all-groups" in text
         assert "IPYTHONDIR=.ipython uv run jupyter lab --notebook-dir=notebooks" in text
+        assert "$(UV_SYNC) --group notebooks" in text
+        assert "$(UV_SYNC) --group notebooks || true" not in text
 
     def test_post_gen_hook_uses_selected_python(self, cookies: Cookies) -> None:
         _bake(cookies)

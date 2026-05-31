@@ -8,7 +8,13 @@ UV_PROJECT_PYTHON ?= {{ cookiecutter.python_version }}
 UV_SYNC ?= uv sync --python $(UV_PROJECT_PYTHON)
 UV_SYNC_DEV ?= $(UV_SYNC) --group dev
 
-.PHONY: help install fmt lint typecheck test jupyter docs latexpdf clean
+.PHONY: help install fmt lint typecheck test clean
+{%- if cookiecutter.include_notebooks == "yes" %}
+.PHONY: jupyter
+{%- endif %}
+{%- if cookiecutter.include_docs == "yes" %}
+.PHONY: docs latexpdf
+{%- endif %}
 {%- if cookiecutter.include_docker == "yes" %}
 .PHONY: docker-build
 {%- endif %}
@@ -43,19 +49,23 @@ test: ## Run tests with coverage (ensure dev tools installed)
 	$(UV_SYNC_DEV)
 	uv run pytest --cov --cov-report=term-missing
 
+{%- if cookiecutter.include_notebooks == "yes" %}
 jupyter: ## Launch JupyterLab (will try to install notebooks group)
-	$(UV_SYNC) --group notebooks || true
+	$(UV_SYNC) --group notebooks
 {%- if cookiecutter.include_notebooks == "yes" and cookiecutter.include_notebook_ux == "yes" %}
 	IPYTHONDIR=.ipython uv run jupyter lab --notebook-dir=notebooks
 {%- else %}
 	uv run jupyter lab --notebook-dir=notebooks
 {%- endif %}
+{%- endif %}
 
+{%- if cookiecutter.include_docs == "yes" %}
 docs: ## Build Sphinx docs (ensure docs group installed)
 	$(MAKE) -C docs html
 
 latexpdf: ## Build Sphinx PDF docs (ensure docs group installed)
 	$(MAKE) -C docs latexpdf
+{%- endif %}
 
 {%- if cookiecutter.include_docker == "yes" %}
 docker-build: ## Build Docker image

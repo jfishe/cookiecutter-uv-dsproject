@@ -233,7 +233,8 @@ uv run pytest tests/
 
 ## PDF docs dependencies
 
-Generated projects can build HTML docs with `make docs`.
+When docs are enabled, generated projects can build HTML docs with
+`make docs`.
 To build PDF docs with Sphinx's LaTeX builder, install a TeX
 toolchain first.
 

@@ -214,11 +214,17 @@ make -C docs clean    # removes Sphinx build artifacts
 - `uv run {{ cookiecutter.pre_commit_tool }} run --all-files`:
   Run the configured hooks across the repo
 {%- endif %}
+{%- if cookiecutter.include_notebooks == "yes" %}
 - `jupyter`: Launch JupyterLab (syncs notebooks group{% if cookiecutter.include_notebook_ux == "yes" %}
   and enables rich inspector help{% endif %})
+{%- endif %}
+{%- if cookiecutter.include_docs == "yes" %}
 - `docs`: Build Sphinx docs (syncs docs group)
 - `latexpdf`: Build Sphinx PDF docs (syncs docs group)
+{%- endif %}
+{%- if cookiecutter.include_docker == "yes" %}
 - `docker-build`: Build Docker image
+{%- endif %}
 - `clean`: Remove caches and build artifacts
 
 ## Contributing
