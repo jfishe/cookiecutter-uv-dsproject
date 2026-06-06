@@ -1,4 +1,4 @@
-<!-- markdownlint-disable-file MD041 -->
+# Overview
 
 ```{include} ../README.md
 :end-before: <!-- docs:badges:start -->

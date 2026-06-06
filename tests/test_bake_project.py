@@ -425,7 +425,7 @@ class TestContent:
         assert "<!-- docs:badges:start -->" in readme
         assert "<!-- docs:badges:end -->" in readme
         docs_readme = (result.project_path / "docs" / "readme.md").read_text()
-        assert "<!-- markdownlint-disable-file MD041 -->" in docs_readme
+        assert docs_readme.startswith("# Overview\n")
         assert ":end-before: <!-- docs:badges:start -->" in docs_readme
         assert ":start-after: <!-- docs:badges:end -->" in docs_readme
         docs_makefile = (result.project_path / "docs" / "Makefile").read_text()
@@ -463,6 +463,26 @@ class TestContent:
         assert "Parameters\n" in modeling
         assert "Returns\n" in modeling
         assert ":param model:" not in modeling
+
+    def test_docs_build_without_sphinx_warnings(self, cookies: Cookies) -> None:
+        result = _bake(cookies, include_docs="yes")
+        sync = subprocess.run(
+            ["uv", "sync", "--group", "docs"],
+            cwd=result.project_path,
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+        assert sync.returncode == 0, sync.stdout + sync.stderr
+
+        completed = subprocess.run(
+            ["uv", "run", "sphinx-build", "-W", "-b", "html", "docs", "docs/_build/html"],
+            cwd=result.project_path,
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+        assert completed.returncode == 0, completed.stdout + completed.stderr
 
     def test_ci_workflow_exists(self, cookies: Cookies) -> None:
         result = _bake(cookies)
