@@ -1,3 +1,5 @@
 """{{ cookiecutter.project_name }} — {{ cookiecutter.project_description }}"""
 
-__version__ = "{{ cookiecutter.initial_version }}"
+from importlib.metadata import version
+
+__version__ = version("{{ cookiecutter.project_slug }}")

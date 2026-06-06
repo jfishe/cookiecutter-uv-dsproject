@@ -21,6 +21,9 @@ These release notes summarize changes since `v3.0.0`.
 
 ### Fixed
 
+- Fixed the generated package `__version__` export to read from
+  `importlib.metadata`, keeping `pyproject.toml` as the single source of
+  truth for the installed version.
 - Fixed the generated `mirrors-mypy` hook to target `src/` explicitly
   when `pass_filenames: false` is enabled, so
   `prek run --all-files mypy` no longer fails with a missing-target

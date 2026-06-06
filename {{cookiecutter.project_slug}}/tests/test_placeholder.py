@@ -2,11 +2,14 @@
 
 from __future__ import annotations
 
+from importlib.metadata import version
+
 
 def test_version_is_string() -> None:
     from {{ cookiecutter.package_name }} import __version__
 
     assert isinstance(__version__, str)
+    assert __version__ == version("{{ cookiecutter.project_slug }}")
     parts = __version__.split(".")
     assert len(parts) >= 2, "Version should be semver-ish (e.g. 0.1.0)"
 
