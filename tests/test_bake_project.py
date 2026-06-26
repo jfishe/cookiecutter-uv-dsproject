@@ -63,7 +63,7 @@ class TestBasicBake:
         result = _bake(cookies)
         text = (result.project_path / "pyproject.toml").read_text()
         assert 'name = "test-project"' in text
-        assert 'requires-python = ">=3.10"' in text
+        assert 'requires-python = ">=3.12"' in text
         assert '"mypy>=1.10"' in text
         assert '"prek>=0.4.3"' in text
         assert '"pre-commit>=3.7"' not in text
@@ -228,7 +228,7 @@ class TestFeatureToggles:
         assert '"ty>=0.0.39"' in pyproject
         assert '"joblib>=1.3"' in pyproject
         assert "[tool.ty.environment]" in pyproject
-        assert 'python-version = "3.10"' in pyproject
+        assert 'python-version = "3.12"' in pyproject
         assert 'include = [ "src" ]' in pyproject
         assert '"mypy>=1.10"' not in pyproject
         assert "[tool.mypy]" not in pyproject
