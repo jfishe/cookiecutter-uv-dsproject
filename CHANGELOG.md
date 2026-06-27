@@ -11,6 +11,10 @@ and this project adheres to
 
 ## [Unreleased]
 
+### Added
+
+Add Dependabot Action to update GitHub Action.
+
 ## [v3.0.3]
 
 ### Added
