@@ -1,6 +1,7 @@
 # Overview
 
 ```{include} ../README.md
+:start-line: 2
 :end-before: <!-- docs:badges:start -->
 :relative-docs: docs/
 :relative-images:
