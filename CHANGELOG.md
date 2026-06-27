@@ -11,7 +11,7 @@ and this project adheres to
 
 ## [Unreleased]
 
-These release notes summarize changes since `v3.0.0`.
+## [v3.0.1]
 
 ### Added
 
@@ -34,6 +34,9 @@ These release notes summarize changes since `v3.0.0`.
 - Fixed the generated IPython profile config to keep the standard
   `get_config()` loader pattern, and configured Ruff to ignore `F821`
   for that file instead of requiring an explicit import.
+- Changed default minimum version to Python 3.12 because
+  Numpy typing is not compatible with mypy or ty
+  `python_version=3.10`.
 
 ## [v3.0.0]
 
@@ -111,7 +114,8 @@ Updated version in `pyproject.toml`.
 - Fixed the generated Makefile so the `docker-build` target is only
   included when Docker support is enabled.
 
-[unreleased]: https://github.com/jfishe/cookiecutter-uv-dsproject/compare/v3.0.0...HEAD
+[unreleased]: https://github.com/jfishe/cookiecutter-uv-dsproject/compare/v3.0.1...HEAD
+[v3.0.1]: https://github.com/jfishe/cookiecutter-uv-dsproject/compare/v3.0.0...v3.0.1
 [v3.0.0]: https://github.com/jfishe/cookiecutter-uv-dsproject/compare/v2.1.0...v3.0.0
 [v2.1.0]: https://github.com/jfishe/cookiecutter-uv-dsproject/compare/v2.0.0...v2.1.0
 [v2.0.0]: https://github.com/jfishe/cookiecutter-uv-dsproject/compare/v1.0.0...v2.0.0
