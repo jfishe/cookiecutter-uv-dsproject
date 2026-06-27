@@ -51,5 +51,3 @@ jobs:
           body: ${{ steps.changelog.outputs.notes }}
           draft: true
           prerelease: false
-          dry_run: true
-

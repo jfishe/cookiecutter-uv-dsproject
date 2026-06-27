@@ -11,6 +11,12 @@ and this project adheres to
 
 ## [Unreleased]
 
+## [v3.0.3]
+
+### Added
+
+GitHub Action automating release.
+
 ## [v3.0.1]
 
 ### Added
@@ -114,7 +120,8 @@ Updated version in `pyproject.toml`.
 - Fixed the generated Makefile so the `docker-build` target is only
   included when Docker support is enabled.
 
-[unreleased]: https://github.com/jfishe/cookiecutter-uv-dsproject/compare/v3.0.1...HEAD
+[unreleased]: https://github.com/jfishe/cookiecutter-uv-dsproject/compare/3.0.3...HEAD
+[v3.0.3]: https://github.com/jfishe/cookiecutter-uv-dsproject/compare/v3.0.1...3.0.3
 [v3.0.1]: https://github.com/jfishe/cookiecutter-uv-dsproject/compare/v3.0.0...v3.0.1
 [v3.0.0]: https://github.com/jfishe/cookiecutter-uv-dsproject/compare/v2.1.0...v3.0.0
 [v2.1.0]: https://github.com/jfishe/cookiecutter-uv-dsproject/compare/v2.0.0...v2.1.0
