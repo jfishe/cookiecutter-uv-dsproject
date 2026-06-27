@@ -1,0 +1,55 @@
+name: Create Release on SemVer Tag
+
+on:
+  push:
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+'
+    branches:
+      - main
+
+jobs:
+  release:
+    name: Create GitHub Release
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0  # required to inspect previous tags
+
+      - name: Get previous tag
+        id: prev
+        run: |
+          # Get the previous tag before the current one
+          PREV_TAG=$(git tag --sort=-v:refname | sed -n '2p')
+          echo "previous_tag=$PREV_TAG" >> $GITHUB_OUTPUT
+
+      - name: Extract changelog section
+        id: changelog
+        run: |
+          CURRENT_TAG="${GITHUB_REF#refs/tags/}"
+          PREV_TAG="${{ steps.prev.outputs.previous_tag }}"
+
+          echo "Generating changelog for $CURRENT_TAG since $PREV_TAG"
+
+          # Extract lines between headings for the two tags
+          awk "/^## \[$CURRENT_TAG\\]/,/^## \[$PREV_TAG\\]/" CHANGELOG.md |
+          sed '$d' > RELEASE_NOTES.md
+
+          echo "notes<<EOF" >> $GITHUB_OUTPUT
+          cat RELEASE_NOTES.md >> $GITHUB_OUTPUT
+          echo "EOF" >> $GITHUB_OUTPUT
+
+      - name: Create GitHub Release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref_name }}
+          release_name: "Release ${{ github.ref_name }}"
+          body: ${{ steps.changelog.outputs.notes }}
+          draft: true
+          prerelease: false
+          dry_run: true
+
