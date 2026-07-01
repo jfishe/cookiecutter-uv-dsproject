@@ -208,12 +208,6 @@ make -C docs clean    # removes Sphinx build artifacts
 - `lint`: Lint with Ruff (installs dev group if needed)
 - `typecheck`: Run {{ cookiecutter.type_checker }} (ensure dev group installed)
 - `test`: Run pytest with coverage (ensure dev group installed)
-{%- if cookiecutter.pre_commit_tool != "none" %}
-- `uv run {{ cookiecutter.pre_commit_tool }} install --prepare-hooks -f`:
-  Install Git hooks and prepare hook environments
-- `uv run {{ cookiecutter.pre_commit_tool }} run --all-files`:
-  Run the configured hooks across the repo
-{%- endif %}
 {%- if cookiecutter.include_notebooks == "yes" %}
 - `jupyter`: Launch JupyterLab (syncs notebooks group{% if cookiecutter.include_notebook_ux == "yes" %}
   and enables rich inspector help{% endif %})
