@@ -29,6 +29,7 @@ coverage.xml
 .ipynb_checkpoints/
 
 # ----- Docs -----
+docs/apidocs/
 docs/_build/
 
 # ----- Data (keep structure, ignore large files) -----
