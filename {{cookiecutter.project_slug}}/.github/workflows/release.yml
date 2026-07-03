@@ -4,20 +4,18 @@ on:
   push:
     tags: ["v*"]
 
-permissions:
-  contents: write
-  id-token: write
-
 jobs:
   build:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v4
-      - uses: astral-sh/setup-uv@v3
+      - uses: actions/checkout@v7
+      - uses: astral-sh/setup-uv@v7
         with:
           enable-cache: true
       - run: uv build
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: dist
           path: dist/
@@ -25,11 +23,13 @@ jobs:
   pypi-publish:
     needs: build
     runs-on: ubuntu-latest
+    permissions:
+      id-token: write
     environment:
       name: pypi
       url: https://pypi.org/p/{{ cookiecutter.project_slug }}
     steps:
-      - uses: actions/download-artifact@v4
+      - uses: actions/download-artifact@v7
         with:
           name: dist
           path: dist/
@@ -38,17 +38,49 @@ jobs:
   github-release:
     needs: build
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      id-token: write
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/download-artifact@v4
+      - uses: actions/checkout@v7
+      - uses: CSchoel/release-notes-from-changelog@v1
+        with:
+          begin-pattern: '/^## \\[v${RELEASE_VERSION}\\]/'
+          link-pattern: '^\\[v${RELEASE_VERSION}\\]:'
+      - uses: actions/download-artifact@v7
         with:
           name: dist
           path: dist/
+      - name: Sign the dists with Sigstore
+        uses: sigstore/gh-action-sigstore-python@v3.4.0
+        with:
+          inputs: |
+            ./dist/*.tar.gz
+            ./dist/*.whl
       - name: Create GitHub Release
         env:
           GH_TOKEN: {% raw %}${{ github.token }}{% endraw %}
         run: >-
-          gh release create {% raw %}${{ github.ref_name }}{% endraw %}
+          gh release create
+          {% raw %}'${{ github.ref_name }}'{% endraw %}
+          --repo {% raw %}'${{ github.repository }}'{% endraw %}
+          --notes ""
+          --draft
+      - name: Upload artifact signatures to GitHub Release
+        env:
+          GITHUB_TOKEN: {% raw %}${{ github.token }}{% endraw %}
+        run: >-
+          gh release upload
+          {% raw %}'${{ github.ref_name }}'{% endraw %}
           dist/*
-          --title "{% raw %}${{ github.ref_name }}{% endraw %}"
-          --generate-notes
+          --repo {% raw %}'${{ github.repository }}'{% endraw %}
+      - name: Update release notes from changelog
+        env:
+          GITHUB_TOKEN: {% raw %}${{ github.token }}{% endraw %}
+        run: >-
+          gh release edit
+          {% raw %}'${{ github.ref_name }}'{% endraw %}
+          --repo {% raw %}'${{ github.repository }}'{% endraw %}
+          --notes-file RELEASE.md
+          --title "Version $RELEASE_VERSION"
+          --draft=false
