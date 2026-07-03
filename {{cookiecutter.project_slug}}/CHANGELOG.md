@@ -13,6 +13,20 @@ and this project adheres to
 
 These release notes summarize changes since `v{{ cookiecutter.initial_version }}`.
 
+<!-- Template
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+### Security
+-->
+
 ## [v{{ cookiecutter.initial_version }}]
 
 ### Added

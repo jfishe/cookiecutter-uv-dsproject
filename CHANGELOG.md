@@ -11,9 +11,36 @@ and this project adheres to
 
 ## [Unreleased]
 
+<!-- Template
 ### Added
 
-Add Dependabot Action to update GitHub Action.
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+### Security
+-->
+
+## [v4.0.0]
+
+### Added
+
+- Dependabot Action to update GitHub Action.
+- Ignore `direnv` files.
+
+### Changed
+
+- CI: update versions.
+- CI: narrow read and write permission to specific jobs.
+
+### Fixed
+
+- CI: should not generate a blank release when Sigstore fails.
+- PyProject version 4.0.0 matches Changelog. Added author.
 
 ## [v3.0.3]
 
