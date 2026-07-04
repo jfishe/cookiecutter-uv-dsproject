@@ -1,10 +1,9 @@
 [build-system]
 build-backend = "hatchling.build"
-requires = [ "hatchling" ]
+requires = [ "hatchling", "uv-dynamic-versioning" ]
 
 [project]
 name = "{{ cookiecutter.project_slug }}"
-version = "{{ cookiecutter.initial_version }}"
 description = "{{ cookiecutter.project_description }}"
 readme = "README.md"
 {%- if cookiecutter.license != "Proprietary" %}
@@ -37,6 +36,7 @@ classifiers = [
   "Programming Language :: Python :: 3.14",
 {%- endif %}
 ]
+dynamic = [ "version" ]
 dependencies = [
   "pandas>=2",
 ]
@@ -98,6 +98,7 @@ training = [
 # Hatchling — src layout
 # ---------------------------------------------------------------------------
 build.targets.wheel.packages = [ "src/{{ cookiecutter.package_name }}" ]
+version.source = "uv-dynamic-versioning"
 
 # ---------------------------------------------------------------------------
 # Ruff
@@ -160,3 +161,11 @@ ini_options.addopts = "--strict-markers --tb=short -q"
 run.source = [ "src/{{ cookiecutter.package_name }}" ]
 report.fail_under = 50
 report.show_missing = true
+
+# ---------------------------------------------------------------------------
+# uv-dynamic-versioning — derive the version from git tags (e.g. v1.2.3)
+# ---------------------------------------------------------------------------
+[tool.uv-dynamic-versioning]
+vcs = "git"
+style = "pep440"
+fallback-version = "0.0.0"

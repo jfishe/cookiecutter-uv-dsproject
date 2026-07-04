@@ -285,8 +285,10 @@ class TestContent:
         init = (
             result.project_path / "src" / "test_project" / "__init__.py"
         ).read_text()
-        assert 'from importlib.metadata import version' in init
+        assert 'from importlib.metadata import PackageNotFoundError, version' in init
         assert '__version__ = version("test-project")' in init
+        assert 'except PackageNotFoundError:' in init
+        assert '__version__ = "0.0.0"' in init
         assert '"1.2.3"' not in init
 
     def test_changelog_scaffold_uses_keepachangelog_and_semver(

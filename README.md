@@ -17,6 +17,8 @@
 - Build backend
 
   - Hatchling with `src/` layout.
+  - Dynamic versioning from Git tags via `uv-dynamic-versioning`
+    (no version bump commits — tag `vX.Y.Z` and release).
 
 - Data-science directories
 
@@ -170,7 +172,9 @@ uv run pytest
   configure richer JupyterLab inspector help with `docrepr`
   and a project-local IPython profile.
 
-- initial_version: `0.1.0` — Starting version string.
+- initial_version: `0.1.0` — Starting version string used to seed the
+  CHANGELOG. The package version itself is derived at build time from
+  Git tags via `uv-dynamic-versioning`, not from this value.
 
 ## Generated project tree
 

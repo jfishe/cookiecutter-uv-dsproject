@@ -2,28 +2,29 @@
 
 All notable changes to this project will be documented in this file.
 
-The format is based on
-[Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
-and this project adheres to
-[Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+The format is based on [Keep a Changelog], and
+this project adheres to [Semantic Versioning].
 
 <!-- markdownlint-disable MD024 -->
 
 ## [Unreleased]
 
-<!-- Template
-### Added
+<!-- ### Added -->
+<!-- ### Changed -->
+<!-- ### Deprecated -->
+<!-- ### Removed -->
+<!-- ### Fixed -->
+<!-- ### Security -->
 
 ### Changed
 
-### Deprecated
-
-### Removed
+- BUILD: configure hatchling for dynamic versioning per
+  [Python Developers Tooling Handbook].
+- DOCS: initial_version seeded in Changelog only.
 
 ### Fixed
 
-### Security
--->
+DOCS: add missing version URLs.
 
 ## [v4.0.0]
 
@@ -151,9 +152,12 @@ Updated version in `pyproject.toml`.
 - Fixed the generated Makefile so the `docker-build` target is only
   included when Docker support is enabled.
 
-[unreleased]: https://github.com/jfishe/cookiecutter-uv-dsproject/compare/3.0.3...HEAD
-[v3.0.3]: https://github.com/jfishe/cookiecutter-uv-dsproject/compare/v3.0.1...3.0.3
-[v3.0.1]: https://github.com/jfishe/cookiecutter-uv-dsproject/compare/v3.0.0...v3.0.1
-[v3.0.0]: https://github.com/jfishe/cookiecutter-uv-dsproject/compare/v2.1.0...v3.0.0
-[v2.1.0]: https://github.com/jfishe/cookiecutter-uv-dsproject/compare/v2.0.0...v2.1.0
+[keep a changelog]: https://keepachangelog.com/en/1.1.0/
+[semantic versioning]: https://semver.org/spec/v2.0.0.html
+[unreleased]: https://github.com/jfishe/cookiecutter-uv-dsproject/compare/4.0.0...HEAD
 [v2.0.0]: https://github.com/jfishe/cookiecutter-uv-dsproject/compare/v1.0.0...v2.0.0
+[v2.1.0]: https://github.com/jfishe/cookiecutter-uv-dsproject/compare/v2.0.0...v2.1.0
+[v3.0.0]: https://github.com/jfishe/cookiecutter-uv-dsproject/compare/v2.1.0...v3.0.0
+[v3.0.1]: https://github.com/jfishe/cookiecutter-uv-dsproject/compare/v3.0.0...v3.0.1
+[v3.0.3]: https://github.com/jfishe/cookiecutter-uv-dsproject/compare/v3.0.1...3.0.3
+[v4.0.0]: https://github.com/jfishe/cookiecutter-uv-dsproject/compare/3.0.3...4.0.0
