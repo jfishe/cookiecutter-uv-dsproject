@@ -24,7 +24,7 @@ this project adheres to [Semantic Versioning].
 ### Added
 
 - An adapted [CLAUDE.md template] for the template and root.
-- `pyrefly` option
+- `pyrefly` as a third type_checker option (alongside `mypy` and `ty`)
 
 ### Changed
 

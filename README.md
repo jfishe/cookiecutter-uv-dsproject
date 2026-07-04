@@ -48,7 +48,7 @@
 - Linting
 
   - Ruff (lint + format) plus configurable type checking with
-    mypy or ty.
+    mypy, ty, or pyrefly.
 
 - CI
 
@@ -96,7 +96,8 @@
 
     - `mirrors-mypy` with `pandas-stubs`, `joblib-stubs`, and
       `mypy --config-file=pyproject.toml src/`, or a local `ty`
-      hook via `uv run ty check src/`.
+      hook via `uv run ty check src/`, or a local `pyrefly` hook
+      via `uv run pyrefly check --output-format min-text`.
 
   - Type checking options
 
@@ -108,6 +109,10 @@
     - The `ty` option installs `ty` plus `joblib` in the `dev`
       dependency-group and adds a minimal `[tool.ty]` configuration
       scoped to `src/`.
+
+    - The `pyrefly` option installs `pyrefly` plus `joblib` in the
+      `dev` dependency-group and adds a minimal `[tool.pyrefly]`
+      configuration scoped to `src/`.
 
     - If you add libraries without upstream typing, prefer
       installing third-party stub packages (e.g.,
@@ -155,8 +160,8 @@ uv run pytest
 
 - min_python_version: `3.10` — `requires-python` floor.
 
-- type_checker: `mypy`/`ty` — Static type checker for optional Git
-  hooks, `make typecheck`, and CI.
+- type_checker: `mypy`/`ty`/`pyrefly` — Static type checker for
+  optional Git hooks, `make typecheck`, and CI.
 
 - license: `MIT` (choices include Apache-2.0, BSD-3, GPL-3,
   Proprietary).

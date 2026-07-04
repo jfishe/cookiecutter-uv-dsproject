@@ -77,12 +77,21 @@ repos:
         additional_dependencies: [pandas-stubs, joblib-stubs]
         args: ["--config-file=pyproject.toml", "src/"]
         pass_filenames: false
-{%- else %}
+{%- elif cookiecutter.type_checker == "ty" %}
   - repo: local
     hooks:
       - id: ty
         name: ty
         entry: uv run ty check src/ --output-format concise --no-progress
+        language: system
+        pass_filenames: false
+        types_or: [python, pyi]
+{%- else %}
+  - repo: local
+    hooks:
+      - id: pyrefly
+        name: pyrefly
+        entry: uv run pyrefly check --output-format min-text
         language: system
         pass_filenames: false
         types_or: [python, pyi]

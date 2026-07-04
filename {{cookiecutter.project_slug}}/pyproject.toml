@@ -50,9 +50,12 @@ dev = [
   "joblib-stubs>=1.5.2.0.20250831",
   "mypy>=1.10",
   "pandas-stubs>=2",
-{%- else %}
+{%- elif cookiecutter.type_checker == "ty" %}
   "joblib>=1.3",
   "ty>=0.0.39",
+{%- else %}
+  "joblib>=1.3",
+  "pyrefly>=1.1",
 {%- endif %}
 {%- if cookiecutter.pre_commit_tool == "prek" %}
   "prek>=0.4.3",
@@ -139,12 +142,16 @@ python_version = "{{ cookiecutter.min_python_version }}"
 strict = true
 warn_return_any = true
 warn_unused_configs = true
-{%- else %}
+{%- elif cookiecutter.type_checker == "ty" %}
 [tool.ty.environment]
 python-version = "{{ cookiecutter.min_python_version }}"
 
 [tool.ty.src]
 include = [ "src" ]
+{%- else %}
+[tool.pyrefly]
+python-version = "{{ cookiecutter.min_python_version }}"
+project-includes = [ "src" ]
 {%- endif %}
 
 [tool.pytest]

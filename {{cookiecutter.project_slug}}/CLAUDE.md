@@ -58,10 +58,14 @@ Always use `uv run` to execute Python code and tools. Never call `python`, `pyte
 - Tool: mypy
 - Run: `uv run mypy .`
 - Configuration lives in `pyproject.toml` under `[tool.mypy]`
-{%- else %}
+{%- elif cookiecutter.type_checker == "ty" %}
 - Tool: ty
 - Run: `uv run ty check`
 - Configuration lives in `pyproject.toml` under `[tool.ty]`
+{%- else %}
+- Tool: pyrefly
+- Run: `uv run pyrefly check`
+- Configuration lives in `pyproject.toml` under `[tool.pyrefly]`
 {%- endif %}
 
 ## Code style

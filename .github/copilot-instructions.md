@@ -24,7 +24,7 @@ or
 uv run pytest -k "<substring_of_test_name>"
 
 Lint, format, and typecheck. Generated projects use ruff and
-either mypy or ty, depending on the `type_checker` option.
+mypy, ty, or pyrefly, depending on the `type_checker` option.
 
 uv run ruff .
 
@@ -33,6 +33,10 @@ uv run mypy src
 or
 
 uv run ty check src
+
+or
+
+uv run pyrefly check
 
 Makefile targets are provided in generated projects and mirror
 many uv commands.
@@ -107,8 +111,8 @@ uv ensures reproducible installs and a lockfile.
 
 Strict typing and linting
 
-Generated projects use ruff for linting/formatting and either
-mypy or ty for static typing, selected by the `type_checker`
+Generated projects use ruff for linting/formatting and mypy, ty,
+or pyrefly for static typing, selected by the `type_checker`
 template option.
 
 Expect stricter type coverage than many data-science templates.
@@ -163,6 +167,9 @@ syntax to execute specific tests.
     config-file when present.
   - local ty hook: runs `uv run ty check src/` when the template
     selects ty.
+  - local pyrefly hook: runs
+    `uv run pyrefly check --output-format min-text` when the
+    template selects pyrefly.
 
   Consult .pre-commit-config.yaml for exact hook IDs and any
   extra args or additional_dependencies used by the template.

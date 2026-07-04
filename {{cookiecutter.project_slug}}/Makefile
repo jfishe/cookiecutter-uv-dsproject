@@ -41,8 +41,10 @@ typecheck: ## Type-check with {{ cookiecutter.type_checker }} (ensure dev tools 
 	$(UV_SYNC_DEV)
 {%- if cookiecutter.type_checker == "mypy" %}
 	uv run mypy src/
-{%- else %}
+{%- elif cookiecutter.type_checker == "ty" %}
 	uv run ty check src/
+{%- else %}
+	uv run pyrefly check
 {%- endif %}
 
 test: ## Run tests with coverage (ensure dev tools installed)

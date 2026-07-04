@@ -42,6 +42,11 @@ class TestBasicBake:
         result = _bake(cookies, project_name="My Cool Project")
         assert result.project_path.name == "my-cool-project"
 
+    def test_gitignore_ignores_claude_local_settings(self, cookies: Cookies) -> None:
+        result = _bake(cookies)
+        gitignore = (result.project_path / ".gitignore").read_text()
+        assert ".claude/settings.local.json" in gitignore
+
     def test_src_layout(self, cookies: Cookies) -> None:
         result = _bake(cookies)
         pkg = result.project_path / "src" / "test_project"
@@ -283,6 +288,52 @@ class TestFeatureToggles:
         assert "[tool.ty]" in claude_md
         assert "mypy" not in claude_md
         assert "pyrefly" not in claude_md
+
+    def test_pyrefly_type_checker_option(self, cookies: Cookies) -> None:
+        result = _bake(cookies, type_checker="pyrefly")
+
+        pyproject = (result.project_path / "pyproject.toml").read_text()
+        assert '"pyrefly>=1.1"' in pyproject
+        assert '"joblib>=1.3"' in pyproject
+        assert "[tool.pyrefly]" in pyproject
+        assert 'python-version = "3.12"' in pyproject
+        assert 'project-includes = [ "src" ]' in pyproject
+        assert '"mypy>=1.10"' not in pyproject
+        assert "[tool.mypy]" not in pyproject
+        assert '"ty>=0.0.39"' not in pyproject
+        assert "[tool.ty.environment]" not in pyproject
+        assert "pandas-stubs>=2" not in pyproject
+        assert "joblib-stubs>=1.5.2.0.20250831" not in pyproject
+
+        pre_commit = (result.project_path / ".pre-commit-config.yaml").read_text()
+        assert "repo: local" in pre_commit
+        assert "id: pyrefly" in pre_commit
+        assert "uv run pyrefly check --output-format min-text" in pre_commit
+        assert "mirrors-mypy" not in pre_commit
+        assert "id: ty" not in pre_commit
+
+        makefile = (result.project_path / "Makefile").read_text()
+        assert "uv run pyrefly check" in makefile
+        assert "Type-check with pyrefly" in makefile
+
+        workflow = (
+            result.project_path / ".github" / "workflows" / "ci.yml"
+        ).read_text()
+        assert "uv run pyrefly check" in workflow
+        assert "uv run mypy src/" not in workflow
+        assert "uv run ty check src/" not in workflow
+
+        readme = (result.project_path / "README.md").read_text()
+        assert "ruff, pyrefly, standard hooks" in readme
+        assert "Run pyrefly (ensure dev group installed)" in readme
+        assert "uv run prek install --prepare-hooks -f" in readme
+
+        claude_md = (result.project_path / "CLAUDE.md").read_text()
+        assert "Tool: pyrefly" in claude_md
+        assert "uv run pyrefly check" in claude_md
+        assert "[tool.pyrefly]" in claude_md
+        assert "Tool: mypy" not in claude_md
+        assert "Tool: ty" not in claude_md
 
     def test_pre_commit_runner_option(self, cookies: Cookies) -> None:
         result = _bake(cookies, pre_commit_tool="pre-commit")
