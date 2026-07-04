@@ -25,16 +25,22 @@ this project adheres to [Semantic Versioning].
 
 - An adapted [CLAUDE.md template] for the template and root.
 - `pyrefly` as a third type_checker option (alongside `mypy` and `ty`)
+- `pytest` strict-config to template and root
 
 ### Changed
 
 - BUILD: configure hatchling for dynamic versioning per
   [Python Developers Tooling Handbook].
 - DOCS: initial_version seeded in Changelog only.
+- CI: trigger release only on semver tags.
 
 ### Fixed
 
 DOCS: add missing version URLs.
+
+### Removed
+
+`pytest` does not require `tests/__init__.py` for discovery.
 
 ## [v4.0.0]
 

@@ -13,3 +13,9 @@ dev = [
     "pytest>=8.0",
     "pytest-cookies>=0.7",
 ]
+# ---------------------------------------------------------------------------
+# pytest
+# ---------------------------------------------------------------------------
+[tool.pytest]
+ini_options.testpaths = [ "tests" ]
+ini_options.addopts = "--strict-markers --strict-config --tb=short -q"
