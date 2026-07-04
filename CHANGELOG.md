@@ -10,11 +10,21 @@ this project adheres to [Semantic Versioning].
 ## [Unreleased]
 
 <!-- ### Added -->
+
 <!-- ### Changed -->
+
 <!-- ### Deprecated -->
+
 <!-- ### Removed -->
+
 <!-- ### Fixed -->
+
 <!-- ### Security -->
+
+### Added
+
+- An adapted [CLAUDE.md template] for the template and root.
+- `pyrefly` option
 
 ### Changed
 
@@ -145,14 +155,19 @@ Updated version in `pyproject.toml`.
 
 - Fixed PDF docs builds by excluding README badge images from the docs
   include while preserving the top-level README heading.
+
 - Fixed generated docs workflows so `make docs`, `make latexpdf`, and
   `make -C docs clean` all work as documented.
+
 - Fixed notebook PDF export so table captions and labels survive
   nbconvert's default LaTeX caption suppression.
+
 - Fixed the generated Makefile so the `docker-build` target is only
   included when Docker support is enabled.
 
+[claude.md template]: https://pydevtools.com/handbook/how-to/how-to-use-the-pydevtools-claude-md-template/
 [keep a changelog]: https://keepachangelog.com/en/1.1.0/
+[python developers tooling handbook]: https://pydevtools.com/handbook/how-to/how-to-add-dynamic-versioning-to-uv-projects/
 [semantic versioning]: https://semver.org/spec/v2.0.0.html
 [unreleased]: https://github.com/jfishe/cookiecutter-uv-dsproject/compare/4.0.0...HEAD
 [v2.0.0]: https://github.com/jfishe/cookiecutter-uv-dsproject/compare/v1.0.0...v2.0.0

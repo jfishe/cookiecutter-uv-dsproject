@@ -77,6 +77,21 @@ class TestBasicBake:
         assert 'args: ["--config-file=pyproject.toml", "src/"]' in pre_commit
         assert "pass_filenames: false" in pre_commit
 
+    def test_claude_md_matches_default_options(self, cookies: Cookies) -> None:
+        result = _bake(cookies)
+        claude_md = (result.project_path / "CLAUDE.md").read_text()
+        assert "Tool: mypy" in claude_md
+        assert "uv run mypy ." in claude_md
+        assert "[tool.mypy]" in claude_md
+        assert "Tool: ty" not in claude_md
+        assert "uv run ty check" not in claude_md
+        assert "[tool.ty]" not in claude_md
+        assert "pyrefly" not in claude_md
+        assert "Tool: prek, pinned as a dev dependency" in claude_md
+        assert "uv run prek install --prepare-hooks -f" in claude_md
+        assert "uv run prek run --all-files" in claude_md
+        assert "pre-commit" not in claude_md
+
     def test_starter_notebook_exists(self, cookies: Cookies) -> None:
         result = _bake(cookies)
         nb = result.project_path / "notebooks" / "getting-started.ipynb"
@@ -204,6 +219,10 @@ class TestFeatureToggles:
         readme = (result.project_path / "README.md").read_text()
         assert "uv run prek install --prepare-hooks -f" not in readme
         assert "uv run pre-commit install --prepare-hooks -f" not in readme
+        claude_md = (result.project_path / "CLAUDE.md").read_text()
+        assert "Pre-commit hooks" not in claude_md
+        assert "prek" not in claude_md
+        assert "pre-commit" not in claude_md
 
     def test_no_notebooks_removes_ipynb(self, cookies: Cookies) -> None:
         result = _bake(cookies, include_notebooks="no")
@@ -258,6 +277,13 @@ class TestFeatureToggles:
         assert "Run ty (ensure dev group installed)" in readme
         assert "uv run prek install --prepare-hooks -f" in readme
 
+        claude_md = (result.project_path / "CLAUDE.md").read_text()
+        assert "Tool: ty" in claude_md
+        assert "uv run ty check" in claude_md
+        assert "[tool.ty]" in claude_md
+        assert "mypy" not in claude_md
+        assert "pyrefly" not in claude_md
+
     def test_pre_commit_runner_option(self, cookies: Cookies) -> None:
         result = _bake(cookies, pre_commit_tool="pre-commit")
 
@@ -272,6 +298,11 @@ class TestFeatureToggles:
         assert "uv run pre-commit install --prepare-hooks -f" in readme
         assert "uv run pre-commit run --all-files" in readme
         assert "uv run prek install --prepare-hooks -f" not in readme
+
+        claude_md = (result.project_path / "CLAUDE.md").read_text()
+        assert "Tool: pre-commit, pinned as a dev dependency" in claude_md
+        assert "uv run pre-commit install --prepare-hooks -f" in claude_md
+        assert "uv run prek install" not in claude_md
 
 
 # ---------------------------------------------------------------------------
