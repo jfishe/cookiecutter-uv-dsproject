@@ -21,6 +21,14 @@ this project adheres to [Semantic Versioning].
 
 <!-- ### Security -->
 
+### Changed
+
+Move `CLAUDE.md` to `.claude/` in template and root.
+
+### Fixed
+
+Align `pyproject.toml` version with Changelog.
+
 ## [v4.1.0]
 
 ### Added

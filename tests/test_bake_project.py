@@ -84,7 +84,7 @@ class TestBasicBake:
 
     def test_claude_md_matches_default_options(self, cookies: Cookies) -> None:
         result = _bake(cookies)
-        claude_md = (result.project_path / "CLAUDE.md").read_text()
+        claude_md = (result.project_path / ".claude/CLAUDE.md").read_text()
         assert "Tool: mypy" in claude_md
         assert "uv run mypy ." in claude_md
         assert "[tool.mypy]" in claude_md
@@ -224,7 +224,7 @@ class TestFeatureToggles:
         readme = (result.project_path / "README.md").read_text()
         assert "uv run prek install --prepare-hooks -f" not in readme
         assert "uv run pre-commit install --prepare-hooks -f" not in readme
-        claude_md = (result.project_path / "CLAUDE.md").read_text()
+        claude_md = (result.project_path / ".claude/CLAUDE.md").read_text()
         assert "Pre-commit hooks" not in claude_md
         assert "prek" not in claude_md
         assert "pre-commit" not in claude_md
@@ -282,7 +282,7 @@ class TestFeatureToggles:
         assert "Run ty (ensure dev group installed)" in readme
         assert "uv run prek install --prepare-hooks -f" in readme
 
-        claude_md = (result.project_path / "CLAUDE.md").read_text()
+        claude_md = (result.project_path / ".claude/CLAUDE.md").read_text()
         assert "Tool: ty" in claude_md
         assert "uv run ty check" in claude_md
         assert "[tool.ty]" in claude_md
@@ -328,7 +328,7 @@ class TestFeatureToggles:
         assert "Run pyrefly (ensure dev group installed)" in readme
         assert "uv run prek install --prepare-hooks -f" in readme
 
-        claude_md = (result.project_path / "CLAUDE.md").read_text()
+        claude_md = (result.project_path / ".claude/CLAUDE.md").read_text()
         assert "Tool: pyrefly" in claude_md
         assert "uv run pyrefly check" in claude_md
         assert "[tool.pyrefly]" in claude_md
@@ -350,7 +350,7 @@ class TestFeatureToggles:
         assert "uv run pre-commit run --all-files" in readme
         assert "uv run prek install --prepare-hooks -f" not in readme
 
-        claude_md = (result.project_path / "CLAUDE.md").read_text()
+        claude_md = (result.project_path / ".claude/CLAUDE.md").read_text()
         assert "Tool: pre-commit, pinned as a dev dependency" in claude_md
         assert "uv run pre-commit install --prepare-hooks -f" in claude_md
         assert "uv run prek install" not in claude_md
