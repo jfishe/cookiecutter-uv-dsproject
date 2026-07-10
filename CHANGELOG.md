@@ -23,11 +23,12 @@ this project adheres to [Semantic Versioning].
 
 ### Changed
 
-Move `CLAUDE.md` to `.claude/` in template and root.
+- Move `CLAUDE.md` to `.claude/` in template and root.
 
 ### Fixed
 
-Align `pyproject.toml` version with Changelog.
+- Align `pyproject.toml` version with Changelog.
+- Only include LaTeX nbconvert templates with notebooks.
 
 ## [v4.1.0]
 
@@ -36,6 +37,7 @@ Align `pyproject.toml` version with Changelog.
 - An adapted [CLAUDE.md template] for the template and root.
 - `pyrefly` as a third type_checker option (alongside `mypy` and `ty`)
 - `pytest` strict-config to template and root
+- Sphinx documents include Changelog.
 
 ### Changed
 
