@@ -7,5 +7,8 @@
 
 Overview <readme>
 License <license>
+{%- if cookiecutter.include_changelog == "yes" %}
+Changelog <changelog>
+{%- endif %}
 apidocs/index
 ```
