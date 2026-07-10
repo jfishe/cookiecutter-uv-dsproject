@@ -20,9 +20,9 @@
 │   ├── py.typed               ← PEP 561 type-checking marker
 │   ├── dataset.py             ← data loading & saving
 │   ├── features.py            ← feature engineering
-│   └── modeling.py            ← model persistence & metrics
+│   ├── modeling.py            ← model persistence & metrics
+│   └── display.py             ← notebook/nbconvert DataFrame display helpers
 ├── tests/
-│   ├── __init__.py
 │   └── test_placeholder.py
 ├── data/
 │   ├── raw/                   ← immutable original data
@@ -30,12 +30,14 @@
 │   ├── processed/             ← final, analysis-ready data
 │   └── external/              ← third-party reference data
 ├── models/                    ← serialised models & metrics
+{%- if cookiecutter.include_notebooks == "yes" %}
 ├── notebooks/
 │   └── getting-started.ipynb  ← starter notebook (dsproject-style)
-{%- if cookiecutter.include_notebooks == "yes" and cookiecutter.include_notebook_ux == "yes" %}
+{%- if cookiecutter.include_notebook_ux == "yes" %}
 ├── .ipython/
 │   └── profile_default/
 │       └── ipython_config.py  ← project-local JupyterLab inspector config
+{%- endif %}
 {%- endif %}
 ├── reports/
 │   └── figures/               ← generated plots
@@ -44,9 +46,18 @@
 ├── configs/
 │   └── example.yaml           ← experiment configuration template
 ├── references/                ← data dictionaries, papers, manuals
+{%- if cookiecutter.include_docs == "yes" %}
 ├── docs/                      ← Sphinx + MyST documentation
+├── templates/latex/           ← nbconvert PDF export template
 ├── .readthedocs.yaml          ← Read the Docs build config
-├── .github/workflows/         ← CI & release pipelines
+{%- endif %}
+{%- if cookiecutter.include_github_actions == "yes" %}
+├── .github/
+│   ├── dependabot.yml
+│   └── workflows/             ← CI & release pipelines
+{%- endif %}
+├── .claude/
+│   └── CLAUDE.md              ← project rules for Claude Code
 ├── pyproject.toml             ← single source of truth
 ├── Makefile                   ← common task shortcuts
 {%- if cookiecutter.include_docker == "yes" %}
