@@ -38,6 +38,7 @@ def prune_features() -> None:
     if not INCLUDE_DOCS:
         _remove("docs")
         _remove(".readthedocs.yaml")
+        _remove("templates")
 
     if not INCLUDE_DOCKER:
         _remove("Dockerfile")
@@ -47,6 +48,7 @@ def prune_features() -> None:
 
     if not INCLUDE_CHANGELOG:
         _remove("CHANGELOG.md")
+        _remove("docs/changelog.md")
 
     if PRE_COMMIT_TOOL == "none":
         _remove(".pre-commit-config.yaml")
