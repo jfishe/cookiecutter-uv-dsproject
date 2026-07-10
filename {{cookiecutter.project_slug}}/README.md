@@ -33,6 +33,7 @@
 {%- if cookiecutter.include_notebooks == "yes" %}
 ├── notebooks/
 │   └── getting-started.ipynb  ← starter notebook (dsproject-style)
+├── templates/latex/           ← nbconvert PDF export template
 {%- if cookiecutter.include_notebook_ux == "yes" %}
 ├── .ipython/
 │   └── profile_default/
@@ -48,7 +49,6 @@
 ├── references/                ← data dictionaries, papers, manuals
 {%- if cookiecutter.include_docs == "yes" %}
 ├── docs/                      ← Sphinx + MyST documentation
-├── templates/latex/           ← nbconvert PDF export template
 ├── .readthedocs.yaml          ← Read the Docs build config
 {%- endif %}
 {%- if cookiecutter.include_github_actions == "yes" %}

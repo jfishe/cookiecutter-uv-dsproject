@@ -32,13 +32,13 @@ def prune_features() -> None:
     if not INCLUDE_NOTEBOOKS:
         _remove("notebooks")
         _remove(".ipython")
+        _remove("templates")
     elif not INCLUDE_NOTEBOOK_UX:
         _remove(".ipython")
 
     if not INCLUDE_DOCS:
         _remove("docs")
         _remove(".readthedocs.yaml")
-        _remove("templates")
 
     if not INCLUDE_DOCKER:
         _remove("Dockerfile")

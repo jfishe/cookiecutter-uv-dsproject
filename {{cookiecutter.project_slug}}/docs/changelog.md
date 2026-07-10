@@ -1,5 +1,6 @@
+<!-- markdownlint-disable MD041 -->
+
 ```{include} ../CHANGELOG.md
-:start-line: 2
 :relative-docs: docs/
 :relative-images:
 ```

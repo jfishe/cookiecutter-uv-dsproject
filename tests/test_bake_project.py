@@ -177,10 +177,12 @@ class TestFeatureToggles:
         result = _bake(cookies, include_notebooks="no")
         assert not (result.project_path / "notebooks").exists()
         assert not (result.project_path / ".ipython").exists()
+        assert not (result.project_path / "templates").exists()
         makefile = (result.project_path / "Makefile").read_text()
         assert not re.search(r"^jupyter:", makefile, re.MULTILINE)
         readme = (result.project_path / "README.md").read_text()
         assert "- `jupyter`:" not in readme
+        assert "templates/latex" not in readme
 
     def test_no_docs(self, cookies: Cookies) -> None:
         result = _bake(cookies, include_docs="no")
