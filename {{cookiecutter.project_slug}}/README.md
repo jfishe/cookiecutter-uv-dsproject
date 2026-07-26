@@ -219,6 +219,8 @@ make -C docs clean    # removes Sphinx build artifacts
 - `lint`: Lint with Ruff (installs dev group if needed)
 - `typecheck`: Run {{ cookiecutter.type_checker }} (ensure dev group installed)
 - `test`: Run pytest with coverage (ensure dev group installed)
+- `audit`: Audit deps (`uv audit`) and CI workflows (`zizmor`) for
+  vulnerabilities
 {%- if cookiecutter.include_notebooks == "yes" %}
 - `jupyter`: Launch JupyterLab (syncs notebooks group{% if cookiecutter.include_notebook_ux == "yes" %}
   and enables rich inspector help{% endif %})

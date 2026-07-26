@@ -406,6 +406,7 @@ class TestContent:
             "fmt",
             "lint",
             "test",
+            "audit",
             "jupyter",
             "docs",
             "latexpdf",
@@ -470,6 +471,20 @@ class TestContent:
         result = _bake(cookies)
         completed = subprocess.run(
             ["uv", "run", "prek", "run", "--all-files"],
+            cwd=result.project_path,
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+        assert completed.returncode == 0, completed.stdout + completed.stderr
+
+    def test_default_project_make_audit_passes(self, cookies: Cookies) -> None:
+        result = _bake(cookies)
+        readme = (result.project_path / "README.md").read_text()
+        assert "- `audit`:" in readme
+
+        completed = subprocess.run(
+            ["make", "audit"],
             cwd=result.project_path,
             check=False,
             capture_output=True,

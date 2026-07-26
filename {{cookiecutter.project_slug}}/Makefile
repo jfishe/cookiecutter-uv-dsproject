@@ -8,7 +8,7 @@ UV_PROJECT_PYTHON ?= {{ cookiecutter.python_version }}
 UV_SYNC ?= uv sync --python $(UV_PROJECT_PYTHON)
 UV_SYNC_DEV ?= $(UV_SYNC) --group dev
 
-.PHONY: help install fmt lint typecheck test clean
+.PHONY: help install fmt lint typecheck test clean audit
 {%- if cookiecutter.include_notebooks == "yes" %}
 .PHONY: jupyter
 {%- endif %}
@@ -46,6 +46,15 @@ typecheck: ## Type-check with {{ cookiecutter.type_checker }} (ensure dev tools 
 {%- else %}
 	uv run pyrefly check
 {%- endif %}
+
+audit: ## Audit dependencies, pre-commit and CI for known vulnerabilities.
+	# `--no-group`/`--no-default-groups` do not actually exclude a group's
+	# packages from `uv audit` (as of uv 0.11.28, preview `audit` command) so
+	# non-vader groups must be selected explicitly via repeated `--only-group`.
+	# uv audit --only-group dev --only-group docs --only-group training --only-group notebooks
+	# uv audit --only-group vader --ignore PYSEC-2026-2132
+	uv audit
+	uvx zizmor --persona=auditor "$(CURDIR)"
 
 test: ## Run tests with coverage (ensure dev tools installed)
 	$(UV_SYNC_DEV)
