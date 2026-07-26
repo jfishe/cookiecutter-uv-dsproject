@@ -21,6 +21,12 @@ this project adheres to [Semantic Versioning].
 
 <!-- ### Security -->
 
+## [v4.2.0]
+
+### Added
+
+- `make audit` to run `uv audit` and [zizmor].
+
 ### Changed
 
 - Move `CLAUDE.md` to `.claude/` in template and root.
@@ -29,6 +35,17 @@ this project adheres to [Semantic Versioning].
 
 - Align `pyproject.toml` version with Changelog.
 - Only include LaTeX nbconvert templates with notebooks.
+- CI: changelog heading missed tags.
+
+### Security
+
+- Add cool down period for dependencies.
+- CI: pin dependencies with SHAs.
+- CI: Do not persist credentials.
+- CI: Restrict permissions to read.
+- CI: Prevent cache poisoning by not caching uv.
+- CI: Replace template expansion with environment variables.
+- CI: Manage concurrency so releases don't clobber each other.
 
 ## [v4.1.0]
 
@@ -184,7 +201,7 @@ Updated version in `pyproject.toml`.
 [keep a changelog]: https://keepachangelog.com/en/1.1.0/
 [python developers tooling handbook]: https://pydevtools.com/handbook/how-to/how-to-add-dynamic-versioning-to-uv-projects/
 [semantic versioning]: https://semver.org/spec/v2.0.0.html
-[unreleased]: https://github.com/jfishe/cookiecutter-uv-dsproject/compare/4.1.0...HEAD
+[unreleased]: https://github.com/jfishe/cookiecutter-uv-dsproject/compare/4.2.0...HEAD
 [v2.0.0]: https://github.com/jfishe/cookiecutter-uv-dsproject/compare/v1.0.0...v2.0.0
 [v2.1.0]: https://github.com/jfishe/cookiecutter-uv-dsproject/compare/v2.0.0...v2.1.0
 [v3.0.0]: https://github.com/jfishe/cookiecutter-uv-dsproject/compare/v2.1.0...v3.0.0
@@ -192,3 +209,5 @@ Updated version in `pyproject.toml`.
 [v3.0.3]: https://github.com/jfishe/cookiecutter-uv-dsproject/compare/v3.0.1...3.0.3
 [v4.0.0]: https://github.com/jfishe/cookiecutter-uv-dsproject/compare/3.0.3...4.0.0
 [v4.1.0]: https://github.com/jfishe/cookiecutter-uv-dsproject/compare/4.0.0...4.1.0
+[v4.2.0]: https://github.com/jfishe/cookiecutter-uv-dsproject/compare/4.1.0...4.2.0
+[zizmor]: https://docs.zizmor.sh/
