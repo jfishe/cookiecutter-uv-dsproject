@@ -80,17 +80,24 @@
     dependency group unless `none` is selected.
   - Configured hooks include:
 
-    - pre-commit-hooks (trailing-whitespace, end-of-file,
-      check-yaml, mixed-line-ending, check-ast, check-json,
-      check-toml).
+    - Standard file checks (trailing-whitespace, end-of-file,
+      check-yaml, mixed-line-ending, check-json, check-toml):
+      prek's Rust-native `repo: builtin` hooks with `prek`, or
+      pre-commit-hooks with `pre-commit`. check-ast,
+      debug-statements, and name-tests-test always come from
+      pre-commit-hooks.
 
     - pyproject-fmt (pyproject formatting).
 
-    - ruff with auto-fix enabled (`--fix`, `--show-fixes`,
-      `--exit-non-zero-on-fix`) and ruff-format for files.
+    - ruff-check with auto-fix enabled (`--fix`, `--show-fixes`,
+      `--exit-non-zero-on-fix`) and ruff-format, which also
+      formats Python code blocks in Markdown.
 
-    - markdownlint-fix and mdformat (with front-matters,
-      gfm, pyproject, ruff, footnote plugins).
+    - rumdl-check with `--fix` (Markdown lint, configured under
+      `[tool.rumdl]`; MyST flavor for `docs/`).
+
+    - actionlint and zizmor (`--offline`) for workflow files when
+      `include_github_actions` is `yes`.
 
     - gitlint on commit-msg for Conventional Commits.
 
@@ -98,6 +105,10 @@
       `mypy --config-file=pyproject.toml src/`, or a local `ty`
       hook via `uv run ty check src/`, or a local `pyrefly` hook
       via `uv run pyrefly check --output-format min-text`.
+
+  - The generated CI lint job runs every hook with
+    `uv run <tool> run --all-files`, and Dependabot tracks hook
+    revs through the `pre-commit` ecosystem.
 
   - Type checking options
 

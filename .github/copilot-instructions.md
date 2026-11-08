@@ -26,7 +26,7 @@ uv run pytest -k "<substring_of_test_name>"
 Lint, format, and typecheck. Generated projects use ruff and
 mypy, ty, or pyrefly, depending on the `type_checker` option.
 
-uv run ruff .
+uv run ruff check .
 
 uv run mypy src
 
@@ -151,14 +151,19 @@ syntax to execute specific tests.
 - .pre-commit-config.yaml — optional hook config used by generated
   projects when `pre_commit_tool` is `prek` or `pre-commit`.
   Major hooks in the template include:
-  - pre-commit-hooks: basic checks such as trailing-whitespace,
-    end-of-file-fixer, and check-yaml.
+  - builtin (prek) or pre-commit-hooks (pre-commit): basic
+    checks such as trailing-whitespace, end-of-file-fixer, and
+    check-yaml; check-ast, debug-statements, and name-tests-test
+    always come from pre-commit-hooks.
   - pyproject-fmt: formatting for pyproject.toml.
-  - ruff: linting; some ruff hooks run with fix arguments
-    to auto-apply fixes (see the hook args).
-  - ruff-format: applies ruff's formatting pass where enabled.
-  - markdownlint-fix and mdformat (with plugins): markdown
-    linting and formatting.
+  - ruff-check: linting with fix arguments to auto-apply fixes
+    (see the hook args).
+  - ruff-format: ruff's formatting pass, including Python code
+    blocks in Markdown.
+  - rumdl-check: Markdown linting with `--fix`, configured under
+    `[tool.rumdl]` in pyproject.toml.
+  - actionlint and zizmor: workflow syntax and security checks,
+    only when `include_github_actions` is `yes`.
   - gitlint (commit-msg): validates commit messages and helps
     enforce Conventional Commits.
   - mirrors-mypy: runs mypy for type checking when the template
@@ -188,7 +193,7 @@ Formatting preferences
   characters and keep one sentence per line to improve diffs
   and AI editing.
 
-- Markdownlint: follow common rules. Examples:
+- Markdown lint (rumdl, markdownlint-compatible rules). Examples:
   - MD013: line length — wrap at ~80 characters.
   - MD022/MD024: headings — ensure consistent heading levels
     and avoid duplicate headings.

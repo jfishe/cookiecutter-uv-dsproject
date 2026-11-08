@@ -80,6 +80,10 @@ Always use `uv run` to execute Python code and tools. Never call `python`, `pyte
 - Tool: {{ cookiecutter.pre_commit_tool }}, pinned as a dev dependency — always invoke via `uv run`, never `uvx` or a global install
 - Install hooks: `uv run {{ cookiecutter.pre_commit_tool }} install --prepare-hooks -f`
 - Run all hooks on demand: `uv run {{ cookiecutter.pre_commit_tool }} run --all-files`
+- The hooks lint Markdown with rumdl (config under `[tool.rumdl]` in `pyproject.toml`) and format Python code blocks in Markdown with ruff
+{%- if cookiecutter.include_github_actions == "yes" %}
+- CI's lint job runs the same hooks, including actionlint and zizmor on `.github/workflows/`
+{%- endif %}
 {%- endif %}
 
 ## What NOT to do
