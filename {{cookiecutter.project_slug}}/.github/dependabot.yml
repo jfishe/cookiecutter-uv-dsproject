@@ -10,7 +10,7 @@ updates:
     cooldown:
       default-days: 7
 
-  - package-ecosystem: pip
+  - package-ecosystem: uv
     directory: /
     schedule:
       interval: monthly
@@ -19,3 +19,16 @@ updates:
         patterns: ["*"]
     cooldown:
       default-days: 7
+{%- if cookiecutter.pre_commit_tool != "none" %}
+
+  # Hook revs in .pre-commit-config.yaml.
+  - package-ecosystem: pre-commit
+    directory: /
+    schedule:
+      interval: weekly
+    groups:
+      hooks:
+        patterns: ["*"]
+    cooldown:
+      default-days: 7
+{%- endif %}

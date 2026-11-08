@@ -70,7 +70,7 @@ class TestBasicBake:
         assert 'name = "test-project"' in text
         assert 'requires-python = ">=3.12"' in text
         assert '"mypy>=1.10"' in text
-        assert '"prek>=0.4.3"' in text
+        assert '"prek>=0.5"' in text
         assert '"pre-commit>=3.7"' not in text
         assert "[tool.mypy]" in text
         assert 'lint.pydocstyle.convention = "numpy"' in text
@@ -253,9 +253,9 @@ class TestFeatureToggles:
         pyproject = (result.project_path / "pyproject.toml").read_text()
         assert '"ty>=0.0.39"' in pyproject
         assert '"joblib>=1.3"' in pyproject
-        assert "[tool.ty.environment]" in pyproject
-        assert 'python-version = "3.12"' in pyproject
-        assert 'include = [ "src" ]' in pyproject
+        assert "[tool.ty]" in pyproject
+        assert 'environment.python-version = "3.12"' in pyproject
+        assert 'src.include = [ "src" ]' in pyproject
         assert '"mypy>=1.10"' not in pyproject
         assert "[tool.mypy]" not in pyproject
         assert "pandas-stubs>=2" not in pyproject
@@ -303,7 +303,7 @@ class TestFeatureToggles:
         assert '"mypy>=1.10"' not in pyproject
         assert "[tool.mypy]" not in pyproject
         assert '"ty>=0.0.39"' not in pyproject
-        assert "[tool.ty.environment]" not in pyproject
+        assert "[tool.ty]" not in pyproject
         assert "pandas-stubs>=2" not in pyproject
         assert "joblib-stubs>=1.5.2.0.20250831" not in pyproject
 
@@ -342,7 +342,7 @@ class TestFeatureToggles:
 
         pyproject = (result.project_path / "pyproject.toml").read_text()
         assert '"pre-commit>=3.7"' in pyproject
-        assert '"prek>=0.4.3"' not in pyproject
+        assert '"prek>=0.5"' not in pyproject
 
         pre_commit = result.project_path / ".pre-commit-config.yaml"
         assert pre_commit.is_file()
@@ -357,6 +357,100 @@ class TestFeatureToggles:
         assert "uv run pre-commit install --prepare-hooks -f" in claude_md
         assert "uv run prek install" not in claude_md
 
+    def test_prek_uses_builtin_hooks(self, cookies: Cookies) -> None:
+        result = _bake(cookies, pre_commit_tool="prek")
+        pre_commit = (result.project_path / ".pre-commit-config.yaml").read_text()
+        assert "repo: builtin" in pre_commit
+        assert "uv run prek update --cooldown-days 7" in pre_commit
+        # Hooks with no prek builtin still come from pre-commit-hooks.
+        hooks_repo = pre_commit.split("pre-commit/pre-commit-hooks", 1)[1]
+        hooks_repo = hooks_repo.split("- repo:", 1)[0]
+        assert "id: check-ast" in hooks_repo
+        assert "id: trailing-whitespace" not in hooks_repo
+
+    def test_pre_commit_runner_has_no_builtin_hooks(self, cookies: Cookies) -> None:
+        result = _bake(cookies, pre_commit_tool="pre-commit")
+        pre_commit = (result.project_path / ".pre-commit-config.yaml").read_text()
+        assert "repo: builtin" not in pre_commit
+        assert "id: trailing-whitespace" in pre_commit
+        assert "uv run pre-commit autoupdate" in pre_commit
+
+    def test_markdown_hooks_use_rumdl(self, cookies: Cookies) -> None:
+        result = _bake(cookies)
+        pre_commit = (result.project_path / ".pre-commit-config.yaml").read_text()
+        assert "id: rumdl-check" in pre_commit
+        assert "id: ruff-check" in pre_commit
+        assert "types_or: [python, pyi, jupyter, markdown]" in pre_commit
+        assert "markdownlint" not in pre_commit
+        assert "mdformat" not in pre_commit
+
+        pyproject = (result.project_path / "pyproject.toml").read_text()
+        assert "[tool.rumdl]" in pyproject
+        assert '"ruff>=0.16"' in pyproject
+        assert 'per-file-flavor."docs/**/*.md" = "myst"' in pyproject
+
+    def test_rumdl_config_omitted_without_hooks(self, cookies: Cookies) -> None:
+        result = _bake(cookies, pre_commit_tool="none")
+        pyproject = (result.project_path / "pyproject.toml").read_text()
+        assert "[tool.rumdl]" not in pyproject
+
+    def test_rumdl_myst_flavor_omitted_without_docs(self, cookies: Cookies) -> None:
+        result = _bake(cookies, include_docs="no")
+        pyproject = (result.project_path / "pyproject.toml").read_text()
+        assert "[tool.rumdl]" in pyproject
+        assert "per-file-flavor" not in pyproject
+
+    def test_workflow_linters_follow_github_actions_option(
+        self, cookies: Cookies
+    ) -> None:
+        with_gha = _bake(cookies, include_github_actions="yes")
+        pre_commit = (with_gha.project_path / ".pre-commit-config.yaml").read_text()
+        assert "id: actionlint" in pre_commit
+        assert "id: zizmor" in pre_commit
+
+        without_gha = _bake(cookies, include_github_actions="no")
+        pre_commit = (without_gha.project_path / ".pre-commit-config.yaml").read_text()
+        assert "actionlint" not in pre_commit
+        assert "zizmor" not in pre_commit
+
+    def test_ci_lint_job_runs_hook_runner(self, cookies: Cookies) -> None:
+        for tool in ("prek", "pre-commit"):
+            result = _bake(cookies, pre_commit_tool=tool)
+            workflow = (
+                result.project_path / ".github" / "workflows" / "ci.yml"
+            ).read_text()
+            assert f"uv run {tool} run --all-files --show-diff-on-failure" in workflow
+            assert "uv run ruff check src/ tests/" not in workflow
+
+        result = _bake(cookies, pre_commit_tool="none")
+        workflow = (
+            result.project_path / ".github" / "workflows" / "ci.yml"
+        ).read_text()
+        assert "uv run ruff check src/ tests/" in workflow
+
+    def test_dependabot_tracks_uv_and_hooks(self, cookies: Cookies) -> None:
+        result = _bake(cookies)
+        dependabot = (result.project_path / ".github" / "dependabot.yml").read_text()
+        assert "package-ecosystem: uv" in dependabot
+        assert "package-ecosystem: pip" not in dependabot
+        assert "package-ecosystem: pre-commit" in dependabot
+
+        result = _bake(cookies, pre_commit_tool="none")
+        dependabot = (result.project_path / ".github" / "dependabot.yml").read_text()
+        assert "package-ecosystem: pre-commit" not in dependabot
+
+    def test_ci_matrix_has_no_duplicate_python(self, cookies: Cookies) -> None:
+        same = _bake(cookies, python_version="3.12", min_python_version="3.12")
+        workflow = (same.project_path / ".github" / "workflows" / "ci.yml").read_text()
+        assert workflow.count('- "3.12"') == 1
+
+        spread = _bake(cookies, python_version="3.14", min_python_version="3.12")
+        workflow = (
+            spread.project_path / ".github" / "workflows" / "ci.yml"
+        ).read_text()
+        assert '- "3.12"' in workflow
+        assert '- "3.14"' in workflow
+
 
 # ---------------------------------------------------------------------------
 # Content checks
@@ -369,18 +463,16 @@ class TestContent:
         init = (
             result.project_path / "src" / "test_project" / "__init__.py"
         ).read_text()
-        assert 'from importlib.metadata import PackageNotFoundError, version' in init
+        assert "from importlib.metadata import PackageNotFoundError, version" in init
         assert '__version__ = version("test-project")' in init
-        assert 'except PackageNotFoundError:' in init
+        assert "except PackageNotFoundError:" in init
         assert '__version__ = "0.0.0"' in init
         assert '"1.2.3"' not in init
 
     def test_changelog_scaffold_uses_keepachangelog_and_semver(
         self, cookies: Cookies
     ) -> None:
-        result = _bake(
-            cookies, include_changelog="yes", initial_version="1.2.3"
-        )
+        result = _bake(cookies, include_changelog="yes", initial_version="1.2.3")
         changelog = (result.project_path / "CHANGELOG.md").read_text()
         assert "https://keepachangelog.com/en/1.1.0/" in changelog
         assert "https://semver.org/spec/v2.0.0.html" in changelog
@@ -471,6 +563,17 @@ class TestContent:
         result = _bake(cookies)
         completed = subprocess.run(
             ["uv", "run", "prek", "run", "--all-files"],
+            cwd=result.project_path,
+            check=False,
+            capture_output=True,
+            text=True,
+        )
+        assert completed.returncode == 0, completed.stdout + completed.stderr
+
+    def test_pre_commit_runner_hooks_pass(self, cookies: Cookies) -> None:
+        result = _bake(cookies, pre_commit_tool="pre-commit")
+        completed = subprocess.run(
+            ["uv", "run", "pre-commit", "run", "--all-files"],
             cwd=result.project_path,
             check=False,
             capture_output=True,
@@ -579,7 +682,16 @@ class TestContent:
         assert sync.returncode == 0, sync.stdout + sync.stderr
 
         completed = subprocess.run(
-            ["uv", "run", "sphinx-build", "-W", "-b", "html", "docs", "docs/_build/html"],
+            [
+                "uv",
+                "run",
+                "sphinx-build",
+                "-W",
+                "-b",
+                "html",
+                "docs",
+                "docs/_build/html",
+            ],
             cwd=result.project_path,
             check=False,
             capture_output=True,

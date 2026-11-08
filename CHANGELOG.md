@@ -21,8 +21,37 @@ this project adheres to [Semantic Versioning].
 
 <!-- ### Security -->
 
+### Added
+
+- Generated hooks: rumdl (`rumdl-check --fix`) lints Markdown, with
+  `[tool.rumdl]` in `pyproject.toml` and the MyST flavor for `docs/`.
+- Generated hooks: actionlint and zizmor (`--offline`) check workflow files
+  when `include_github_actions` is `yes`.
+- Generated Dependabot config tracks hook revs (`pre-commit` ecosystem).
+
+### Changed
+
+- Generated hooks: rumdl and ruff-format (which now formats Python code
+  blocks in Markdown) replace markdownlint-cli and mdformat, so hooks no
+  longer need Node.
+- Generated hooks: `prek` projects use prek's `repo: builtin` hooks for the
+  standard file checks; ruff hooks use the `ruff-check` id; hook revs bumped
+  (pre-commit-hooks v6.0.0, ruff v0.17.3, mirrors-mypy v2.3.1,
+  pyproject-fmt v2.30.3).
+- Generated CI: the lint job runs every hook (`uv run <tool> run
+  --all-files`) instead of ruff alone; `astral-sh/setup-uv` bumped to
+  v10.3.0.
+- Generated Dependabot config uses the `uv` ecosystem instead of `pip`.
+- Generated `pyproject.toml`: floors `ruff>=0.16` and `prek>=0.5`; layout
+  matches pyproject-fmt v2.30 (sorted dev group, Python 3.15 classifier,
+  flattened `[tool.ty]`).
+
 ### Fixed
 
+- Generated CI: the test matrix no longer lists the same Python twice when
+  `python_version` equals `min_python_version` (actionlint error).
+- Generated `display.py`: drop an implicit f-string concatenation that
+  ruff-format rewrote on every run.
 - CI: release notes extraction pulled in every changelog section back to a
   stale "previous tag" instead of just the current release, because the
   repo's tag history mixes `v`-prefixed and unprefixed tags and git's

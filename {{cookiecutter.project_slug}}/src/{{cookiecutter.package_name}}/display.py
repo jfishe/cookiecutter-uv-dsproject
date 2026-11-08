@@ -127,7 +127,7 @@ class DataFrameDisplay:
         body = self.preview.to_string()
         if len(self.preview) == self.total_rows:
             return body
-        return f"Showing first {len(self.preview)} of {self.total_rows} rows.\n\n" f"{body}"
+        return f"Showing first {len(self.preview)} of {self.total_rows} rows.\n\n{body}"
 
     def _styler(self) -> pd.io.formats.style.Styler:
         _require_styler_dependencies()

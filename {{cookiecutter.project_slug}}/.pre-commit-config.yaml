@@ -1,10 +1,43 @@
+# Update hook revs with:
+{%- if cookiecutter.pre_commit_tool == "prek" %}
+#   uv run prek update --cooldown-days 7
+{%- else %}
+#   uv run pre-commit autoupdate
+{%- endif %}
 repos:
+{%- if cookiecutter.pre_commit_tool == "prek" %}
+  # prek's Rust-native versions of the standard pre-commit-hooks.
+  - repo: builtin
+    hooks:
+      - id: check-added-large-files
+        args: ["--maxkb=1000"]
+      - id: check-case-conflict
+      - id: check-json
+      - id: check-merge-conflict
+      - id: check-toml
+      - id: check-xml
+      - id: check-yaml
+      - id: end-of-file-fixer
+      - id: mixed-line-ending
+        args: ["--fix=auto"] # replace 'auto' with 'lf' to enforce Linux/Mac line endings or 'crlf' for Windows
+      - id: trailing-whitespace
+
+  # Python-specific hooks that have no prek builtin.
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.6.0
+    rev: v6.0.0
+    hooks:
+      - id: check-ast
+      - id: debug-statements
+      - id: name-tests-test
+        args: ["--pytest-test-first"]
+{%- else %}
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v6.0.0
     hooks:
       - id: check-added-large-files
         args: ["--maxkb=1000"]
       - id: check-ast
+      - id: check-case-conflict
       - id: check-json
       - id: check-merge-conflict
       - id: check-toml
@@ -17,19 +50,28 @@ repos:
       - id: name-tests-test
         args: ["--pytest-test-first"]
       - id: trailing-whitespace
+{%- endif %}
 
   - repo: https://github.com/tox-dev/pyproject-fmt
-    rev: "v2.21.0"
+    rev: v2.30.3
     hooks:
       - id: pyproject-fmt
 
+  # ruff-format also formats Python code blocks in Markdown (ruff >= 0.16).
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: v0.4.8
+    rev: v0.17.3
     hooks:
-      - id: ruff
-        args: ["--fix",  "--show-fixes", "--exit-non-zero-on-fix"]
+      - id: ruff-check
+        args: ["--fix", "--show-fixes", "--exit-non-zero-on-fix"]
       - id: ruff-format
-        types_or: [python, pyi]
+        types_or: [python, pyi, jupyter, markdown]
+
+  # Markdown lint and auto-fix; configured under [tool.rumdl] in pyproject.toml.
+  - repo: https://github.com/rvben/rumdl-pre-commit
+    rev: v0.3.2
+    hooks:
+      - id: rumdl-check
+        args: ["--fix"]
 
   # Check for misspells in documentation files:
   # - repo: https://github.com/codespell-project/codespell
@@ -41,26 +83,20 @@ repos:
   #         - ".git/*"
   #       additional_dependencies:
   #         - tomli
+{%- if cookiecutter.include_github_actions == "yes" %}
 
-  - repo: https://github.com/igorshubovych/markdownlint-cli
-    rev: v0.48.0
+  # GitHub Actions workflows: syntax (actionlint) and security (zizmor).
+  - repo: https://github.com/Mateusz-Grzelinski/actionlint-py
+    rev: v1.7.12.24
     hooks:
-      - id: markdownlint-fix
+      - id: actionlint
 
-  - repo: https://github.com/hukkin/mdformat
-    rev: 1.0.0  # Use the ref you want to point at
+  - repo: https://github.com/zizmorcore/zizmor-pre-commit
+    rev: v1.31.1
     hooks:
-    - id: mdformat
-      # Optionally add plugins
-      additional_dependencies:
-        - mdformat-front-matters
-        - mdformat-gfm
-        - mdformat-pyproject
-        - mdformat-ruff
-        # - mdformat-shfmt
-        - mdformat_footnote
-        - ruff
-      language_version: python3.13
+      - id: zizmor
+        args: ["--offline"]
+{%- endif %}
 
   ## Conventional Commits
   - repo: https://github.com/jorisroovers/gitlint
@@ -71,7 +107,7 @@ repos:
 
 {%- if cookiecutter.type_checker == "mypy" %}
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v1.10.0
+    rev: v2.3.1
     hooks:
       - id: mypy
         additional_dependencies: [pandas-stubs, joblib-stubs]
