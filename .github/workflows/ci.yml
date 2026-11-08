@@ -23,34 +23,31 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          fetch-depth: 0  # required to inspect previous tags
           persist-credentials: false
-
-      - name: Get previous tag
-        id: prev
-        run: |
-          # Get the previous tag before the current one
-          PREV_TAG=$(git tag --sort=-v:refname | sed -n '2p')
-          echo "previous_tag=$PREV_TAG" >> $GITHUB_OUTPUT
 
       - name: Extract changelog section
         run: |
           CURRENT_TAG="${GITHUB_REF#refs/tags/}"
-          PREV_TAG="${STEPS_PREV_OUTPUTS_PREVIOUS_TAG}"
 
           # CHANGELOG.md headings are always `v`-prefixed (e.g. `## [v4.1.0]`),
-          # even for tags that dropped the `v` prefix, so normalize both tags
+          # even for tags that dropped the `v` prefix, so normalize the tag
           # to the heading's format regardless of how the git tag is written.
           CURRENT_HEADING="v${CURRENT_TAG#v}"
-          PREV_HEADING="v${PREV_TAG#v}"
 
-          echo "Generating changelog for $CURRENT_HEADING since $PREV_HEADING"
+          echo "Generating changelog for $CURRENT_HEADING"
 
-          # Extract lines between headings for the two tags
-          awk "/^## \[$CURRENT_HEADING\\]/,/^## \[$PREV_HEADING\\]/" CHANGELOG.md |
-          sed '$d' > RELEASE_NOTES.md
-        env:
-          STEPS_PREV_OUTPUTS_PREVIOUS_TAG: ${{ steps.prev.outputs.previous_tag }}
+          # Print from the current release's heading up to (not including)
+          # the next "## [" heading, whatever it is. Comparing tags via
+          # `git tag --sort=-v:refname` to find a "previous" heading is not
+          # reliable here: this repo's history mixes `v`-prefixed and
+          # unprefixed tags, and git's version-sort treats the literal `v`
+          # as greater than a leading digit, so it does not sort tags into
+          # true release order.
+          awk -v heading="## [$CURRENT_HEADING]" '
+            $0 == heading { found=1; print; next }
+            found && /^## \[/ { exit }
+            found { print }
+          ' CHANGELOG.md > RELEASE_NOTES.md
 
       - name: Create GitHub Release
         env:

@@ -21,6 +21,15 @@ this project adheres to [Semantic Versioning].
 
 <!-- ### Security -->
 
+### Fixed
+
+- CI: release notes extraction pulled in every changelog section back to a
+  stale "previous tag" instead of just the current release, because the
+  repo's tag history mixes `v`-prefixed and unprefixed tags and git's
+  version-sort does not order them chronologically. Extraction now isolates
+  the current release's heading directly instead of relying on a computed
+  previous tag.
+
 ## [v4.2.0]
 
 ### Added
