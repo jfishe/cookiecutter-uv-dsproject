@@ -40,7 +40,7 @@ this project adheres to [Semantic Versioning].
   pyproject-fmt v2.30.3).
 - Generated CI: the lint job runs every hook (`uv run <tool> run
   --all-files`) instead of ruff alone; `astral-sh/setup-uv` bumped to
-  v10.3.0.
+  v10.3.3.
 - Generated Dependabot config uses the `uv` ecosystem instead of `pip`.
 - Generated `pyproject.toml`: floors `ruff>=0.16` and `prek>=0.5`; layout
   matches pyproject-fmt v2.30 (sorted dev group, Python 3.15 classifier,
